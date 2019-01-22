@@ -2,6 +2,8 @@
  * Created by IRGeekSauce on 11/26/15.
  */
 
+import dbConnection.DataBaseConnector;
+import dbConnection.ItemPrice;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -13,6 +15,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -21,10 +24,13 @@ import javafx.stage.Window;
 import javafx.util.converter.NumberStringConverter;
 import java.io.*;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 
 public class Controller implements Initializable {
+    private DataBaseConnector dataBaseConnector;
+
 
     @FXML
     private ResourceBundle resources;
@@ -32,29 +38,29 @@ public class Controller implements Initializable {
     @FXML
     private URL location;
 
-    @FXML // fx:id="firstNameCol"
-    private TableColumn<Student, String> firstNameCol;
+    @FXML // fx:id="IDProdukt"
+    private TableColumn<ItemPrice, Number> IDProdukt;
 
-    @FXML // fx:id="lastNameCol"
-    private TableColumn<Student, String> lastNameCol;
+    @FXML // fx:id="IDMarket"
+    private TableColumn<ItemPrice, Number> IDMarket;
 
-    @FXML // fx:id="netIDCol"
-    private TableColumn<Student, String> netIDCol;
+    @FXML // fx:id="nazwa"
+    private TableColumn<ItemPrice, String> nazwa;
 
-    @FXML // fx:id="ageCol"
-    private TableColumn<Student, Number> ageCol;
+    @FXML // fx:id="ilosc"
+    private TableColumn<ItemPrice, Number> ilosc;
 
-    @FXML // fx:id="gpaCol"
-    private TableColumn<Student, Number> gpaCol;
+    @FXML // fx:id="waga"
+    private TableColumn<ItemPrice, Number> waga;
 
-    @FXML // fx:id="majorCol"
-    private TableColumn<Student, String> majorCol;
+    @FXML // fx:id="jednostka"
+    private TableColumn<ItemPrice, String> jednostka;
 
-    @FXML // fx:id="uinCol"
-    private TableColumn<Student, String> uinCol;
+    @FXML // fx:id="cena"
+    private TableColumn<ItemPrice, Number> cena;
 
-    @FXML // fx:id="genderCol"
-    private TableColumn<Student, String> genderCol;
+    @FXML // fx:id="promocja"
+    private TableColumn<ItemPrice, Number> promocja;
 
     @FXML // fx:id="firstNameField"
     private TextField firstNameField;
@@ -80,12 +86,12 @@ public class Controller implements Initializable {
     @FXML
     private TextField filterInput;
 
-    @FXML // fx:id="genderBox"
-    private ComboBox<String> genderBox;
-    ObservableList<String> genderBoxData = FXCollections.observableArrayList();
+//    @FXML // fx:id="genderBox"
+//    private ComboBox<String> genderBox;
+//    ObservableList<String> genderBoxData = FXCollections.observableArrayList();
 
     @FXML
-    private TableView<Student> studentTable;
+    private TableView<ItemPrice> itemTable;
 
     @FXML // fx:id="addBtn"
     private Button addBtn;
@@ -96,7 +102,7 @@ public class Controller implements Initializable {
     @FXML
     private MenuBar fileMenu;
 
-    ObservableList<Student> observableStudentList = FXCollections.observableArrayList();
+    ObservableList<ItemPrice> observableItemList = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -108,51 +114,51 @@ public class Controller implements Initializable {
             }
         });
         //initialize editable attributes
-        studentTable.setEditable(true);
-        firstNameCol.setOnEditCommit(e -> firstNameCol_OnEditCommit(e));
-        lastNameCol.setOnEditCommit(e -> lastNameCol_OnEditCommit(e));
-        uinCol.setOnEditCommit(e -> uinCol_OnEditCommit(e));
-        netIDCol.setOnEditCommit(e -> netIDCol_OnEditCommit(e));
-        majorCol.setOnEditCommit(e -> majorCol_OnEditCommit(e));
-        ageCol.setOnEditCommit(e -> ageCol_OnEditCommit(e));
-        gpaCol.setOnEditCommit(e -> genderCol_OnEditCommit(e));
-        genderCol.setOnEditCommit(e -> genderCol_OnEditCommit(e));
+        itemTable.setEditable(true);
+        IDProdukt.setOnEditCommit(e -> IDProdukt_OnEditCommit(e));
+        IDMarket.setOnEditCommit(e -> IDMarket_OnEditCommit(e));
+        nazwa.setOnEditCommit(e -> nazwa_OnEditCommit(e));
+        ilosc.setOnEditCommit(e -> ilosc_OnEditCommit(e));
+        waga.setOnEditCommit(e -> waga_OnEditCommit(e));
+        jednostka.setOnEditCommit(e -> jednostka_OnEditCommit(e));
+        cena.setOnEditCommit(e -> cena_OnEditCommit(e));
+        promocja.setOnEditCommit(e -> promocja_OnEditCommit(e));
 
-        studentTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        itemTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        firstNameCol.setCellFactory(TextFieldTableCell.forTableColumn());
-        lastNameCol.setCellFactory(TextFieldTableCell.forTableColumn());
-        uinCol.setCellFactory(TextFieldTableCell.forTableColumn());
-        netIDCol.setCellFactory(TextFieldTableCell.forTableColumn());
-        majorCol.setCellFactory(TextFieldTableCell.forTableColumn());
-        ageCol.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
-        gpaCol.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
-        genderCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        IDProdukt.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
+        IDMarket.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
+        nazwa.setCellFactory(TextFieldTableCell.forTableColumn());
+        ilosc.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
+        waga.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
+        jednostka.setCellFactory(TextFieldTableCell.forTableColumn());
+        cena.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
+        promocja.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
 
 
-        firstNameCol.setCellValueFactory(cellData -> cellData.getValue().firstNameProperty());
-        lastNameCol.setCellValueFactory(cellData -> cellData.getValue().lastNameProperty());
-        majorCol.setCellValueFactory(cellData -> cellData.getValue().majorProperty());
-        gpaCol.setCellValueFactory(cellData -> cellData.getValue().gradepointProperty());
-        uinCol.setCellValueFactory(cellData -> cellData.getValue().uinProperty());
-        netIDCol.setCellValueFactory(cellData -> cellData.getValue().netIDProperty());
-        ageCol.setCellValueFactory(cellData -> cellData.getValue().ageProperty());
-        genderCol.setCellValueFactory(cellData -> cellData.getValue().genderProperty());
+        IDProdukt.setCellValueFactory(cellData -> cellData.getValue().getIDProduktProperty());
+        IDMarket.setCellValueFactory(cellData -> cellData.getValue().getIDMarketProperty());
+        nazwa.setCellValueFactory(cellData -> cellData.getValue().getNazwaProperty());
+        ilosc.setCellValueFactory(cellData -> cellData.getValue().iloscProperty());
+        waga.setCellValueFactory(cellData -> cellData.getValue().wagaProperty());
+        jednostka.setCellValueFactory(cellData -> cellData.getValue().jednostkaProperty());
+        cena.setCellValueFactory(cellData -> cellData.getValue().cenaProperty());
+        promocja.setCellValueFactory(cellData -> cellData.getValue().promocjaProperty());
 
 
         //initialize gender ComboBox
-        genderBoxData.add(new String("Male"));
-        genderBoxData.add(new String("Female"));
-
-        genderBox.setItems(genderBoxData);
+//        genderBoxData.add(new String("Male"));
+//        genderBoxData.add(new String("Female"));
+//
+//        genderBox.setItems(genderBoxData);
 
 
         addBtn.setDisable(true);
         deleteBtn.setDisable(true);
-        studentTable.setItems(observableStudentList);
-        studentTable.setEditable(true);
-        studentTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        studentTable.setPlaceholder(new Label("Your Table is Empty"));
+        itemTable.setItems(observableItemList);
+        itemTable.setEditable(true);
+        itemTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        itemTable.setPlaceholder(new Label("Your Table is Empty"));
 
         firstNameField.focusedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
@@ -162,87 +168,85 @@ public class Controller implements Initializable {
                 }
             }
         });
-        studentTable.focusedProperty().addListener(new ChangeListener<Boolean>() {
+        itemTable.focusedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                if (studentTable.isFocused()) {
+                if (itemTable.isFocused()) {
                     deleteBtn.setDisable(false);
                 }
             }
         });
     }//end initialize
 
-    /*
-    ----------------------------------------------Control handlers---------------------------------------------
-     */
+    /*----------------------------------------------Control handlers---------------------------------------------*/
     public void handleAddButtonClick(ActionEvent event) {
-        /*
-        Get input from user and add to Table
-         */
-        if (observableStudentList.size() < 10) {
-            if (isValidInput(event)) {
-                if (genderBox.getValue().equals("Male")) {
-                    Student student = new Student();
-                    student.setFirstName(firstNameField.getText());
-                    student.setLastName(lastNameField.getText());
-                    student.setAge(Integer.parseInt(ageField.getText()));
-                    student.setMajor(majorField.getText());
-                    student.setNetID(netIDField.getText());
-                    student.setUin(uinField.getText());
-                    student.setGradepoint(Double.parseDouble(gpaField.getText()));
-                    student.setGender(genderBox.getValue());
-                    observableStudentList.add(student);
-                    System.out.println(student.toString());
-                    firstNameField.clear();
-                    lastNameField.clear();
-                    uinField.clear();
-                    netIDField.clear();
-                    majorField.clear();
-                    ageField.clear();
-                    gpaField.clear();
-                    genderBox.setValue("Gender");
-                }
-                if (genderBox.getValue().equals("Female")) {
-                    Student student = new Student();
-                    student.setFirstName(firstNameField.getText());
-                    student.setLastName(lastNameField.getText());
-                    student.setAge(Integer.parseInt(ageField.getText()));
-                    student.setMajor(majorField.getText());
-                    student.setNetID(netIDField.getText());
-                    student.setUin(uinField.getText());
-                    student.setGradepoint(Double.parseDouble(gpaField.getText()));
-                    student.setGender(genderBox.getValue());
-                    observableStudentList.add(student);
-                    System.out.println(student.toString());
-                    firstNameField.clear();
-                    lastNameField.clear();
-                    uinField.clear();
-                    netIDField.clear();
-                    majorField.clear();
-                    ageField.clear();
-                    gpaField.clear();
-                    genderBox.setValue("Gender");
-                }
-            }
-        } else {
-            Alert sizeAlert = new Alert(Alert.AlertType.WARNING, "Warning", ButtonType.OK);
-            Window owner = ((Node) event.getTarget()).getScene().getWindow();
-            sizeAlert.setContentText("You may only hold 10 Students at this time");
-            sizeAlert.initModality(Modality.APPLICATION_MODAL);
-            sizeAlert.initOwner(owner);
-            sizeAlert.showAndWait();
-            if (sizeAlert.getResult() == ButtonType.OK) {
-                sizeAlert.close();
-                firstNameField.clear();
-                lastNameField.clear();
-                uinField.clear();
-                netIDField.clear();
-                majorField.clear();
-                ageField.clear();
-                gpaField.clear();
-                genderBox.setValue("Gender");
-            }
-        }
+//        /*
+//        Get input from user and add to Table
+//         */
+//        if (observableItemList.size() < 10) {
+//            if (isValidInput(event)) {
+//                if (genderBox.getValue().equals("Male")) {
+//                    Student student = new Student();
+//                    student.setFirstName(firstNameField.getText());
+//                    student.setLastName(lastNameField.getText());
+//                    student.setAge(Integer.parseInt(ageField.getText()));
+//                    student.setMajor(majorField.getText());
+//                    student.setNetID(netIDField.getText());
+//                    student.setUin(uinField.getText());
+//                    student.setGradepoint(Double.parseDouble(gpaField.getText()));
+//                    student.setGender(genderBox.getValue());
+//                    observableItemList.add(/*TODO*/);
+//                    System.out.println(student.toString());
+//                    firstNameField.clear();
+//                    lastNameField.clear();
+//                    uinField.clear();
+//                    netIDField.clear();
+//                    majorField.clear();
+//                    ageField.clear();
+//                    gpaField.clear();
+//                    genderBox.setValue("Gender");
+//                }
+//                if (genderBox.getValue().equals("Female")) {
+//                    Student student = new Student();
+//                    student.setFirstName(firstNameField.getText());
+//                    student.setLastName(lastNameField.getText());
+//                    student.setAge(Integer.parseInt(ageField.getText()));
+//                    student.setMajor(majorField.getText());
+//                    student.setNetID(netIDField.getText());
+//                    student.setUin(uinField.getText());
+//                    student.setGradepoint(Double.parseDouble(gpaField.getText()));
+//                    student.setGender(genderBox.getValue());
+//                    observableStudentList.add(student);
+//                    System.out.println(student.toString());
+//                    firstNameField.clear();
+//                    lastNameField.clear();
+//                    uinField.clear();
+//                    netIDField.clear();
+//                    majorField.clear();
+//                    ageField.clear();
+//                    gpaField.clear();
+//                    genderBox.setValue("Gender");
+//                }
+//            }
+//        } else {
+//            Alert sizeAlert = new Alert(Alert.AlertType.WARNING, "Warning", ButtonType.OK);
+//            Window owner = ((Node) event.getTarget()).getScene().getWindow();
+//            sizeAlert.setContentText("You may only hold 10 Students at this time");
+//            sizeAlert.initModality(Modality.APPLICATION_MODAL);
+//            sizeAlert.initOwner(owner);
+//            sizeAlert.showAndWait();
+//            if (sizeAlert.getResult() == ButtonType.OK) {
+//                sizeAlert.close();
+//                firstNameField.clear();
+//                lastNameField.clear();
+//                uinField.clear();
+//                netIDField.clear();
+//                majorField.clear();
+//                ageField.clear();
+//                gpaField.clear();
+//                genderBox.setValue("Gender");
+//            }
+//        }
     }
     /*
     In case of empty fields. Gives alert for respective empty field and requests focus on that field.
@@ -342,140 +346,152 @@ public class Controller implements Initializable {
                 gpaField.requestFocus();
             }
         }
-        if(genderBox == null || genderBox.getValue().isEmpty()) {
-            validInput = false;
-            Alert emptyGender = new Alert(Alert.AlertType.WARNING, "Warning", ButtonType.OK);
-            Window owner = ((Node) event.getTarget()).getScene().getWindow();
-            emptyGender.setContentText("Gender is EMPTY");
-            emptyGender.initModality(Modality.APPLICATION_MODAL);
-            emptyGender.initOwner(owner);
-            emptyGender.showAndWait();
-            if (emptyGender.getResult() == ButtonType.OK) {
-                emptyGender.close();
-                genderBox.requestFocus();
-            }
-        }
+//        if(genderBox == null || genderBox.getValue().isEmpty()) {
+//            validInput = false;
+//            Alert emptyGender = new Alert(Alert.AlertType.WARNING, "Warning", ButtonType.OK);
+//            Window owner = ((Node) event.getTarget()).getScene().getWindow();
+//            emptyGender.setContentText("Gender is EMPTY");
+//            emptyGender.initModality(Modality.APPLICATION_MODAL);
+//            emptyGender.initOwner(owner);
+//            emptyGender.showAndWait();
+//            if (emptyGender.getResult() == ButtonType.OK) {
+//                emptyGender.close();
+//                genderBox.requestFocus();
+//            }
+//        }
         return validInput;
     }
     /*
     handle column edits
      */
-    public void firstNameCol_OnEditCommit(Event e) {
-        TableColumn.CellEditEvent<Student, String> cellEditEvent;
-        cellEditEvent = (TableColumn.CellEditEvent<Student, String>) e;
-        Student student = cellEditEvent.getRowValue();
-        student.setFirstName(cellEditEvent.getNewValue());
+    public void IDProdukt_OnEditCommit(Event e) {
+        TableColumn.CellEditEvent<ItemPrice, Number> cellEditEvent;
+        cellEditEvent = (TableColumn.CellEditEvent<ItemPrice, Number>) e;
+        ItemPrice singleItemPrice = cellEditEvent.getRowValue();
+        singleItemPrice.setIDProdukt((int)cellEditEvent.getNewValue());
     }
-    public void lastNameCol_OnEditCommit(Event e) {
-        TableColumn.CellEditEvent<Student, String> cellEditEvent;
-        cellEditEvent = (TableColumn.CellEditEvent<Student, String>) e;
-        Student student = cellEditEvent.getRowValue();
-        student.setLastName(cellEditEvent.getNewValue());
+    public void IDMarket_OnEditCommit(Event e) {
+        TableColumn.CellEditEvent<ItemPrice, Number> cellEditEvent;
+        cellEditEvent = (TableColumn.CellEditEvent<ItemPrice, Number>) e;
+        ItemPrice singleItemPrice = cellEditEvent.getRowValue();
+        singleItemPrice.setIDMarket((int)cellEditEvent.getNewValue());
     }
-    public void uinCol_OnEditCommit(Event e) {
+    public void nazwa_OnEditCommit(Event e) {
         TableColumn.CellEditEvent<Student, String> cellEditEvent;
         cellEditEvent = (TableColumn.CellEditEvent<Student, String>) e;
         Student student = cellEditEvent.getRowValue();
         student.setUin(cellEditEvent.getNewValue());
     }
-    public void netIDCol_OnEditCommit(Event e) {
+    public void ilosc_OnEditCommit(Event e) {
         TableColumn.CellEditEvent<Student, String> cellEditEvent;
         cellEditEvent = (TableColumn.CellEditEvent<Student, String>) e;
         Student student = cellEditEvent.getRowValue();
         student.setNetID(cellEditEvent.getNewValue());
     }
-    public void majorCol_OnEditCommit(Event e) {
+    public void waga_OnEditCommit(Event e) {
         TableColumn.CellEditEvent<Student, String> cellEditEvent;
         cellEditEvent = (TableColumn.CellEditEvent<Student, String>) e;
         Student student = cellEditEvent.getRowValue();
         student.setMajor(cellEditEvent.getNewValue());
     }
-    public void ageCol_OnEditCommit(Event e) {
+    public void jednostka_OnEditCommit(Event e) {
         TableColumn.CellEditEvent<Student, Integer> cellEditEvent;
         cellEditEvent = (TableColumn.CellEditEvent<Student, Integer>) e;
         Student student = cellEditEvent.getRowValue();
         student.setAge(cellEditEvent.getNewValue());
     }
-    public void gpaCol_OnEditCommit(Event e) {
+    public void cena_OnEditCommit(Event e) {
         TableColumn.CellEditEvent<Student, Double> cellEditEvent;
         cellEditEvent = (TableColumn.CellEditEvent<Student, Double>) e;
         Student student = cellEditEvent.getRowValue();
         student.setGradepoint(cellEditEvent.getNewValue());
     }
-    public void genderCol_OnEditCommit(Event e) {
+    public void promocja_OnEditCommit(Event e) {
         TableColumn.CellEditEvent<Student, String> cellEditEvent;
         cellEditEvent = (TableColumn.CellEditEvent<Student, String>) e;
         Student student = cellEditEvent.getRowValue();
         student.setGender(cellEditEvent.getNewValue());
     }
     public void handleDeleteButtonClick(ActionEvent event) {
-        if(!observableStudentList.isEmpty()) {
-            System.out.println("Delete button clicked");
-            Alert deleteAlert = new Alert(Alert.AlertType.WARNING, "Confirm", ButtonType.OK, ButtonType.CANCEL);
-            Window owner = ((Node) event.getTarget()).getScene().getWindow();
-            deleteAlert.setContentText("Are you sure you want to delete this?\n\nTHIS CANNOT BE UNDONE.");
-            deleteAlert.initModality(Modality.APPLICATION_MODAL);
-            deleteAlert.initOwner(owner);
-            deleteAlert.showAndWait();
-            if(deleteAlert.getResult() == ButtonType.OK) {
-                observableStudentList.removeAll(studentTable.getSelectionModel().getSelectedItems());
-                studentTable.getSelectionModel().clearSelection();
-            }
-            else {
-                deleteAlert.close();
-            }
-        }
+//        if(!observableStudentList.isEmpty()) {
+//            System.out.println("Delete button clicked");
+//            Alert deleteAlert = new Alert(Alert.AlertType.WARNING, "Confirm", ButtonType.OK, ButtonType.CANCEL);
+//            Window owner = ((Node) event.getTarget()).getScene().getWindow();
+//            deleteAlert.setContentText("Are you sure you want to delete this?\n\nTHIS CANNOT BE UNDONE.");
+//            deleteAlert.initModality(Modality.APPLICATION_MODAL);
+//            deleteAlert.initOwner(owner);
+//            deleteAlert.showAndWait();
+//            if(deleteAlert.getResult() == ButtonType.OK) {
+//                observableStudentList.removeAll(itemTable.getSelectionModel().getSelectedItems());
+//                itemTable.getSelectionModel().clearSelection();
+//            }
+//            else {
+//                deleteAlert.close();
+//            }
+//        }
     }
-    public void handleClearButtonClick(ActionEvent event) {
-        firstNameField.clear();
-        lastNameField.clear();
-        uinField.clear();
-        netIDField.clear();
-        majorField.clear();
-        ageField.clear();
-        gpaField.clear();
-        genderBox.setValue("Gender");
+    public void handleSearchButtonClick(ActionEvent event) {
+        dataBaseConnector = new DataBaseConnector();
+        if (!filterInput.getText().equals("")) {
+            System.out.println("Filtr wyszukiwan: " + filterInput.getText());
+            List<ItemPrice> itemPrices = dataBaseConnector.getItemPrcesOf(filterInput.getText());
+            for (ItemPrice ip : itemPrices) {
+                observableItemList.add(ip);
+
+            }
+        } else {
+            System.out.println("Filtr wyszukiwan jest pusty!");
+            List<ItemPrice> itemPrices = dataBaseConnector.getItemPrces();
+            for (ItemPrice ip : itemPrices) {
+                observableItemList.add(ip);
+        }
+
+
+        }
+
+
+
     }
     //filter table by first or last name
     public void filterStudentList(String oldValue, String newValue) {
-        ObservableList<Student> filteredList = FXCollections.observableArrayList();
-        if(filterInput == null || (newValue.length() < oldValue.length()) || newValue == null) {
-            studentTable.setItems(observableStudentList);
-        }
-        else {
-            newValue = newValue.toUpperCase();
-            for(Student students : studentTable.getItems()) {
-                String filterFirstName = students.getFirstName();
-                String filterLastName = students.getLastName();
-                if(filterFirstName.toUpperCase().contains(newValue) || filterLastName.toUpperCase().contains(newValue)) {
-                    filteredList.add(students);
-                }
-            }
-            studentTable.setItems(filteredList);
-        }
+//        ObservableList<Student> filteredList = FXCollections.observableArrayList();
+//        if(filterInput == null || (newValue.length() < oldValue.length()) || newValue == null) {
+//            itemTable.setItems(observableStudentList);
+//        }
+//        else {
+//            newValue = newValue.toUpperCase();
+//            for(Student students : itemTable.getItems()) {
+//                String filterFirstName = students.getFirstName();
+//                String filterLastName = students.getLastName();
+//                if(filterFirstName.toUpperCase().contains(newValue) || filterLastName.toUpperCase().contains(newValue)) {
+//                    filteredList.add(students);
+//                }
+//            }
+//            itemTable.setItems(filteredList);
+//        }
     }
     public void handleSave(ActionEvent event) {
-        Stage secondaryStage = new Stage();
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Save Student Table");
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-        if(observableStudentList.isEmpty()) {
-            secondaryStage.initOwner(this.fileMenu.getScene().getWindow());
-            Alert emptyTableAlert = new Alert(Alert.AlertType.ERROR, "EMPTY TABLE", ButtonType.OK);
-            emptyTableAlert.setContentText("You have nothing to save");
-            emptyTableAlert.initModality(Modality.APPLICATION_MODAL);
-            emptyTableAlert.initOwner(this.fileMenu.getScene().getWindow());
-            emptyTableAlert.showAndWait();
-            if(emptyTableAlert.getResult() == ButtonType.OK) {
-                emptyTableAlert.close();
-            }
-        }
-        else {
-            File file = fileChooser.showSaveDialog(secondaryStage);
-            if(file != null) {
-                saveFile(studentTable.getItems(), file);
-            }
-        }
+//        Stage secondaryStage = new Stage();
+//        FileChooser fileChooser = new FileChooser();
+//        fileChooser.setTitle("Save Student Table");
+//        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+//        if(observableStudentList.isEmpty()) {
+//            secondaryStage.initOwner(this.fileMenu.getScene().getWindow());
+//            Alert emptyTableAlert = new Alert(Alert.AlertType.ERROR, "EMPTY TABLE", ButtonType.OK);
+//            emptyTableAlert.setContentText("You have nothing to save");
+//            emptyTableAlert.initModality(Modality.APPLICATION_MODAL);
+//            emptyTableAlert.initOwner(this.fileMenu.getScene().getWindow());
+//            emptyTableAlert.showAndWait();
+//            if(emptyTableAlert.getResult() == ButtonType.OK) {
+//                emptyTableAlert.close();
+//            }
+//        }
+//        else {
+//            File file = fileChooser.showSaveDialog(secondaryStage);
+//            if(file != null) {
+//                saveFile(itemTable.getItems(), file);
+//            }
+//        }
     }
     public void saveFile(ObservableList<Student> observableStudentList, File file) {
         try {
