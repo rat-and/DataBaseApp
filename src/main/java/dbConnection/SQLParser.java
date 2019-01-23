@@ -17,4 +17,14 @@ public class SQLParser {
         query = "INSERT INTO cenyproduktow (IDProdukt, IDMarket, Nazwa, Ilosc, Waga, Jednostka, Cena, Promocja) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
         return query;
     }
+
+    public String updateItemPriceQuery_IDMarket() {
+        query = "UPDATE cenyproduktow SET IDMarket = ? WHERE IDProdukt = ?";
+        return query;
+    }
+
+    public String updateItemPriceQuery_ilosc() {
+        query = "UPDATE cenyproduktow SET Ilosc = ? WHERE IDProdukt = ?";
+        return query;
+    }
 }

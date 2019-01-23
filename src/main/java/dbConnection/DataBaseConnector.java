@@ -16,6 +16,7 @@ public class DataBaseConnector {
     private Statement statement;
     private String query;
     private SQLParser sqlParser;
+    private String[] columns = {"IDProdukt", "IDMarket", "Nazwa", "Ilosc", "Waga", "Jednostka", "Cena"};
 
     public DataBaseConnector() {
         this.sqlParser = new SQLParser();
@@ -109,6 +110,54 @@ public class DataBaseConnector {
             preparedStatement.setString(6, singleItemPrice.getJednostka());
             preparedStatement.setDouble(7, singleItemPrice.getCena());
             preparedStatement.setInt(8, 0);
+
+            preparedStatement.execute();
+
+            statement.close();
+            connection.close();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void updateItemPrice_IDMarket(ItemPrice singleItemPrice, int newValue) {
+        query = sqlParser.updateItemPriceQuery_IDMarket();
+
+        try {
+            Class.forName(DBDRIVER);
+            connection = DriverManager.getConnection(DBURL, DBUSER, DBPASS);
+            statement = connection.createStatement();
+
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, newValue);
+            preparedStatement.setInt(2, singleItemPrice.getIDProdukt());
+
+            preparedStatement.execute();
+
+            statement.close();
+            connection.close();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void updateItemPrice_ilosc(ItemPrice singleItemPrice, int newValue) {
+        query = sqlParser.updateItemPriceQuery_ilosc();
+
+        try {
+            Class.forName(DBDRIVER);
+            connection = DriverManager.getConnection(DBURL, DBUSER, DBPASS);
+            statement = connection.createStatement();
+
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, newValue);
+            preparedStatement.setInt(2, singleItemPrice.getIDProdukt());
 
             preparedStatement.execute();
 

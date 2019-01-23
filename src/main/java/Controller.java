@@ -145,14 +145,6 @@ public class Controller implements Initializable {
         cena.setCellValueFactory(cellData -> cellData.getValue().cenaProperty());
         promocja.setCellValueFactory(cellData -> cellData.getValue().promocjaProperty());
 
-
-        //initialize gender ComboBox
-//        genderBoxData.add(new String("Male"));
-//        genderBoxData.add(new String("Female"));
-//
-//        genderBox.setItems(genderBoxData);
-
-
         addBtn.setDisable(true);
         deleteBtn.setDisable(true);
         itemTable.setItems(observableItemList);
@@ -190,8 +182,9 @@ public class Controller implements Initializable {
         cenaField.clear();
     }
 
-    /*----------------------------------------------Control handlers---------------------------------------------*/
+    /*------------------------------------------------Control handlers------------------------------------------------*/
     public void handleSearchButtonClick(ActionEvent event) {
+        itemTable.getItems().clear();
         dataBaseConnector = new DataBaseConnector();
         if (filterInput.getText().equals("*")) {
 //            System.out.println("Filtr wyszukiwan jest pusty!");
@@ -207,7 +200,7 @@ public class Controller implements Initializable {
 
             }
         } else {
-            Alert emptyFilter = new Alert(Alert.AlertType.WARNING, "Pusty filr zapytan!", ButtonType.OK);
+            Alert emptyFilter = new Alert(Alert.AlertType.WARNING, "Pusty filtr zapytan!", ButtonType.OK);
             Window owner = ((Node) event.getTarget()).getScene().getWindow();
             emptyFilter.setContentText("Wpisz * by wyswietlic wszystkie krotki");
             emptyFilter.initModality(Modality.APPLICATION_MODAL);
@@ -341,13 +334,28 @@ public class Controller implements Initializable {
         TableColumn.CellEditEvent<ItemPrice, Number> cellEditEvent;
         cellEditEvent = (TableColumn.CellEditEvent<ItemPrice, Number>) e;
         ItemPrice singleItemPrice = cellEditEvent.getRowValue();
-        singleItemPrice.setIDProdukt((int)cellEditEvent.getNewValue());
+        System.out.println(singleItemPrice.getIDProdukt());
+        System.out.println((cellEditEvent.getNewValue().intValue()));
+        if (popupAlert("Potwierdzasz zmiane atrybutu: " + "IDProdukt z " + cellEditEvent.getOldValue().intValue()
+                + " na " + cellEditEvent.getNewValue().intValue() + " ?")) {
+            System.out.println("Potwierdzil");
+            singleItemPrice.setIDProdukt(cellEditEvent.getNewValue().intValue());
+        }
     }
     public void IDMarket_OnEditCommit(Event e) {
         TableColumn.CellEditEvent<ItemPrice, Number> cellEditEvent;
         cellEditEvent = (TableColumn.CellEditEvent<ItemPrice, Number>) e;
         ItemPrice singleItemPrice = cellEditEvent.getRowValue();
-        singleItemPrice.setIDMarket((int)cellEditEvent.getNewValue());
+//        System.out.println(singleItemPrice.getIDMarket());
+//        System.out.println((cellEditEvent.getNewValue().intValue()));
+        if (popupAlert("Potwierdzasz zmiane atrybutu: " + "IDMarket z " + cellEditEvent.getOldValue().intValue()
+                + " na " + cellEditEvent.getNewValue().intValue() + " ?")) {
+//            System.out.println("Potwierdzil dla id" + singleItemPrice.getIDProdukt());
+            dataBaseConnector = new DataBaseConnector();
+            //updateItemPrice(Object, column_number, new_value)
+            dataBaseConnector.updateItemPrice_IDMarket(singleItemPrice, cellEditEvent.getNewValue().intValue());
+            singleItemPrice.setIDMarket(cellEditEvent.getNewValue().intValue());
+        }
     }
     public void nazwa_OnEditCommit(Event e) {
         TableColumn.CellEditEvent<Student, String> cellEditEvent;
@@ -356,10 +364,18 @@ public class Controller implements Initializable {
         student.setUin(cellEditEvent.getNewValue());
     }
     public void ilosc_OnEditCommit(Event e) {
-        TableColumn.CellEditEvent<Student, String> cellEditEvent;
-        cellEditEvent = (TableColumn.CellEditEvent<Student, String>) e;
-        Student student = cellEditEvent.getRowValue();
-        student.setNetID(cellEditEvent.getNewValue());
+        TableColumn.CellEditEvent<ItemPrice, Number> cellEditEvent;
+        cellEditEvent = (TableColumn.CellEditEvent<ItemPrice, Number>) e;
+        ItemPrice singleItemPrice = cellEditEvent.getRowValue();
+//        System.out.println(singleItemPrice.getIDMarket());
+//        System.out.println((cellEditEvent.getNewValue().intValue()));
+        if (popupAlert("Potwierdzasz zmiane atrybutu: " + "Ilosc z " + cellEditEvent.getOldValue().intValue()
+                + " na " + cellEditEvent.getNewValue().intValue() + " ?")) {
+            dataBaseConnector = new DataBaseConnector();
+            //updateItemPrice(Object, column_number, new_value)
+            dataBaseConnector.updateItemPrice_ilosc(singleItemPrice, cellEditEvent.getNewValue().intValue());
+            singleItemPrice.setIDMarket(cellEditEvent.getNewValue().intValue());
+        }
     }
     public void waga_OnEditCommit(Event e) {
         TableColumn.CellEditEvent<Student, String> cellEditEvent;
@@ -477,6 +493,24 @@ public class Controller implements Initializable {
         }
         else {
             exitAlert.close();
+        }
+    }
+
+    public boolean popupAlert(String msg) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Confirm", ButtonType.OK, ButtonType.CANCEL);
+        Stage owner = (Stage) fileMenu.getScene().getWindow();
+        alert.setContentText(msg);
+        alert.initModality(Modality.APPLICATION_MODAL);
+        alert.initOwner(owner);
+        alert.showAndWait();
+
+        if(alert.getResult() == ButtonType.OK) {
+            alert.close();
+            return true;
+        }
+        else {
+            alert.close();
+            return false;
         }
     }
 }
