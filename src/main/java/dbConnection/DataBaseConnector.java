@@ -14,7 +14,6 @@ public class DataBaseConnector {
 
     private Connection connection;
     private Statement statement;
-//    private PreparedStatement preparedStatement;
     private String query;
     private SQLParser sqlParser;
 
@@ -65,11 +64,9 @@ public class DataBaseConnector {
             Class.forName(DBDRIVER);
             connection = DriverManager.getConnection(DBURL, DBUSER, DBPASS);
             statement = connection.createStatement();
-//            ResultSet resultSet = statement.executeQuery(query);
 
-             PreparedStatement preparedStatement = connection.prepareStatement(query);
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, "%" + nazwa + "%");
-//            preparedStatement.execute();
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
@@ -93,6 +90,36 @@ public class DataBaseConnector {
             e.printStackTrace();
         }
         return itemPrices;
+    }
+
+    public void insertItemPrice(ItemPrice singleItemPrice) {
+        query = sqlParser.insertItemPriceQuery();
+
+        try {
+            Class.forName(DBDRIVER);
+            connection = DriverManager.getConnection(DBURL, DBUSER, DBPASS);
+            statement = connection.createStatement();
+
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, singleItemPrice.getIDProdukt());
+            preparedStatement.setInt(2, singleItemPrice.getIDMarket());
+            preparedStatement.setString(3, singleItemPrice.getNazwa());
+            preparedStatement.setInt(4, singleItemPrice.getIlosc());
+            preparedStatement.setDouble(5, singleItemPrice.getWaga());
+            preparedStatement.setString(6, singleItemPrice.getJednostka());
+            preparedStatement.setDouble(7, singleItemPrice.getCena());
+            preparedStatement.setInt(8, 0);
+
+            preparedStatement.execute();
+
+            statement.close();
+            connection.close();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }

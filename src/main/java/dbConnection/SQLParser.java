@@ -12,4 +12,9 @@ public class SQLParser {
         query = "SELECT * FROM cenyproduktow WHERE Nazwa LIKE ?";
         return query;
     }
+
+    public String insertItemPriceQuery() {
+        query = "INSERT INTO cenyproduktow (IDProdukt, IDMarket, Nazwa, Ilosc, Waga, Jednostka, Cena, Promocja) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+        return query;
+    }
 }

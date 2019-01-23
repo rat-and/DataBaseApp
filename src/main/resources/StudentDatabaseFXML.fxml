@@ -50,25 +50,25 @@
     <AnchorPane minHeight="0.0" minWidth="1000.0" prefHeight="100.0" prefWidth="1000.0">
          <children>
             <HBox />
-            <TextField fx:id="firstNameField" layoutX="14.0" layoutY="14.0" prefHeight="25.0" prefWidth="91.0" promptText="IDProdukt..." />
-            <TextField fx:id="netIDField" layoutX="14.0" layoutY="97.0" prefHeight="25.0" prefWidth="91.0" promptText="Ilosc..." />
-            <TextField fx:id="lastNameField" layoutX="130.0" layoutY="14.0" prefHeight="25.0" prefWidth="91.0" promptText="IDMarket..." />
-            <TextField fx:id="uinField" layoutX="14.0" layoutY="54.0" prefHeight="25.0" prefWidth="208.0" promptText="Nazwa..." />
-            <TextField fx:id="majorField" layoutX="130.0" layoutY="97.0" prefHeight="25.0" prefWidth="91.0" promptText="Waga..." />
-            <TextField fx:id="ageField" layoutX="130.0" layoutY="144.0" prefHeight="25.0" prefWidth="91.0" promptText="Jednostka..." />
-            <TextField fx:id="gpaField" layoutX="14.0" layoutY="144.0" prefHeight="25.0" prefWidth="91.0" promptText="Cena..." />
+            <TextField fx:id="IDProduktField" layoutX="14.0" layoutY="14.0" prefHeight="25.0" prefWidth="91.0" promptText="IDProdukt..." />
+            <TextField fx:id="iloscFieled" layoutX="14.0" layoutY="97.0" prefHeight="25.0" prefWidth="91.0" promptText="Ilosc..." />
+            <TextField fx:id="IDMarketField" layoutX="130.0" layoutY="14.0" prefHeight="25.0" prefWidth="91.0" promptText="IDMarket..." />
+            <TextField fx:id="nazwaField" layoutX="14.0" layoutY="54.0" prefHeight="25.0" prefWidth="208.0" promptText="Nazwa..." />
+            <TextField fx:id="wagaField" layoutX="130.0" layoutY="97.0" prefHeight="25.0" prefWidth="91.0" promptText="Waga..." />
+            <TextField fx:id="jednostkaField" layoutX="130.0" layoutY="144.0" prefHeight="25.0" prefWidth="91.0" promptText="Jednostka..." />
+            <TextField fx:id="cenaField" layoutX="14.0" layoutY="144.0" prefHeight="25.0" prefWidth="91.0" promptText="Cena..." />
             <Button fx:id="addBtn" layoutX="264.0" layoutY="144.0" mnemonicParsing="false" onAction="#handleAddButtonClick" prefHeight="25.0" prefWidth="91.0" text="Dodaj" />
             <Button fx:id="deleteBtn" layoutX="874.0" layoutY="144.0" mnemonicParsing="false" onAction="#handleDeleteButtonClick" prefHeight="25.0" prefWidth="91.0" text="Zglos blad" />
             <TextField fx:id="filterInput" layoutX="410.0" layoutY="97.0" prefHeight="25.0" prefWidth="273.0" promptText="Szukana Nazwa..." />
-            <Button fx:id="clrBtn" layoutX="592.0" layoutY="144.0" mnemonicParsing="false" onAction="#handleSearchButtonClick" prefHeight="25.0" prefWidth="91.0" text="Szukaj" />
+            <Button fx:id="srchBtn" layoutX="592.0" layoutY="144.0" mnemonicParsing="false" onAction="#handleSearchButtonClick" prefHeight="25.0" prefWidth="91.0" text="Szukaj" />
              <Label layoutX="452.0" layoutY="20.0" prefHeight="39.0" prefWidth="208.0" text="Wyszukiwarka Cen" textAlignment="CENTER" textFill="#e11c1c" textOverrun="WORD_ELLIPSIS">
                <font>
                   <Font name="Ink Free" size="24.0" />
                </font>
             </Label>
-            <Button fx:id="deleteBtn1" layoutX="874.0" layoutY="34.0" mnemonicParsing="false" onAction="#handleDeleteButtonClick" prefHeight="25.0" prefWidth="91.0" text="Dodaj sklep" />
-            <Button fx:id="deleteBtn2" layoutX="874.0" layoutY="67.0" mnemonicParsing="false" onAction="#handleDeleteButtonClick" prefHeight="25.0" prefWidth="91.0" text="Usun slep" />
-            <Button fx:id="deleteBtn3" layoutX="874.0" layoutY="110.0" mnemonicParsing="false" onAction="#handleDeleteButtonClick" prefHeight="25.0" prefWidth="91.0" text="Usun rekord" />
+            <Button fx:id="addMarketBtn" layoutX="874.0" layoutY="34.0" mnemonicParsing="false" onAction="#handleDeleteButtonClick" prefHeight="25.0" prefWidth="91.0" text="Dodaj sklep" />
+            <Button fx:id="delMarketBtn" layoutX="874.0" layoutY="67.0" mnemonicParsing="false" onAction="#handleDeleteButtonClick" prefHeight="25.0" prefWidth="91.0" text="Usun slep" />
+            <Button fx:id="delRecBtn" layoutX="874.0" layoutY="110.0" mnemonicParsing="false" onAction="#handleDeleteButtonClick" prefHeight="25.0" prefWidth="91.0" text="Usun rekord" />
          </children></AnchorPane>
   </items>
 </SplitPane>

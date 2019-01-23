@@ -62,26 +62,26 @@ public class Controller implements Initializable {
     @FXML // fx:id="promocja"
     private TableColumn<ItemPrice, Number> promocja;
 
-    @FXML // fx:id="firstNameField"
-    private TextField firstNameField;
+    @FXML // fx:id="IDProduktField"
+    private TextField IDProduktField;
 
-    @FXML // fx:id="lastNameField"
-    private TextField lastNameField;
+    @FXML // fx:id="IDMarketField"
+    private TextField IDMarketField;
 
-    @FXML // fx:id="netIDField"
-    private TextField netIDField;
+    @FXML // fx:id="iloscField"
+    private TextField iloscFieled;
 
-    @FXML // fx:id="ageField"
-    private TextField ageField;
+    @FXML // fx:id="jednostkaField"
+    private TextField jednostkaField;
 
-    @FXML // fx:id="gpaField"
-    private TextField gpaField;
+    @FXML // fx:id="cenaField"
+    private TextField cenaField;
 
-    @FXML // fx:id="majorField"
-    private TextField majorField;
+    @FXML // fx:id="wagaField"
+    private TextField wagaField;
 
-    @FXML // fx:id="uinField"
-    private TextField uinField;
+    @FXML // fx:id="nazwaField"
+    private TextField nazwaField;
 
     @FXML
     private TextField filterInput;
@@ -160,10 +160,11 @@ public class Controller implements Initializable {
         itemTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         itemTable.setPlaceholder(new Label("Your Table is Empty"));
 
-        firstNameField.focusedProperty().addListener(new ChangeListener<Boolean>() {
+        IDProduktField.focusedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                if (firstNameField.isFocused()) {
+                if (IDProduktField.isFocused()) {
+                    //TODO if admin
                     addBtn.setDisable(false);
                 }
             }
@@ -172,116 +173,102 @@ public class Controller implements Initializable {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 if (itemTable.isFocused()) {
+                    //TODO if admin or user
                     deleteBtn.setDisable(false);
                 }
             }
         });
-    }//end initialize
+    }//end initializeo
+
+    public void clearFields() {
+        IDMarketField.clear();
+        IDProduktField.clear();
+        iloscFieled.clear();
+        wagaField.clear();
+        nazwaField.clear();
+        jednostkaField.clear();
+        cenaField.clear();
+    }
 
     /*----------------------------------------------Control handlers---------------------------------------------*/
-    public void handleAddButtonClick(ActionEvent event) {
-//        /*
-//        Get input from user and add to Table
-//         */
-//        if (observableItemList.size() < 10) {
-//            if (isValidInput(event)) {
-//                if (genderBox.getValue().equals("Male")) {
-//                    Student student = new Student();
-//                    student.setFirstName(firstNameField.getText());
-//                    student.setLastName(lastNameField.getText());
-//                    student.setAge(Integer.parseInt(ageField.getText()));
-//                    student.setMajor(majorField.getText());
-//                    student.setNetID(netIDField.getText());
-//                    student.setUin(uinField.getText());
-//                    student.setGradepoint(Double.parseDouble(gpaField.getText()));
-//                    student.setGender(genderBox.getValue());
-//                    observableItemList.add(/*TODO*/);
-//                    System.out.println(student.toString());
-//                    firstNameField.clear();
-//                    lastNameField.clear();
-//                    uinField.clear();
-//                    netIDField.clear();
-//                    majorField.clear();
-//                    ageField.clear();
-//                    gpaField.clear();
-//                    genderBox.setValue("Gender");
-//                }
-//                if (genderBox.getValue().equals("Female")) {
-//                    Student student = new Student();
-//                    student.setFirstName(firstNameField.getText());
-//                    student.setLastName(lastNameField.getText());
-//                    student.setAge(Integer.parseInt(ageField.getText()));
-//                    student.setMajor(majorField.getText());
-//                    student.setNetID(netIDField.getText());
-//                    student.setUin(uinField.getText());
-//                    student.setGradepoint(Double.parseDouble(gpaField.getText()));
-//                    student.setGender(genderBox.getValue());
-//                    observableStudentList.add(student);
-//                    System.out.println(student.toString());
-//                    firstNameField.clear();
-//                    lastNameField.clear();
-//                    uinField.clear();
-//                    netIDField.clear();
-//                    majorField.clear();
-//                    ageField.clear();
-//                    gpaField.clear();
-//                    genderBox.setValue("Gender");
-//                }
-//            }
-//        } else {
-//            Alert sizeAlert = new Alert(Alert.AlertType.WARNING, "Warning", ButtonType.OK);
-//            Window owner = ((Node) event.getTarget()).getScene().getWindow();
-//            sizeAlert.setContentText("You may only hold 10 Students at this time");
-//            sizeAlert.initModality(Modality.APPLICATION_MODAL);
-//            sizeAlert.initOwner(owner);
-//            sizeAlert.showAndWait();
-//            if (sizeAlert.getResult() == ButtonType.OK) {
-//                sizeAlert.close();
-//                firstNameField.clear();
-//                lastNameField.clear();
-//                uinField.clear();
-//                netIDField.clear();
-//                majorField.clear();
-//                ageField.clear();
-//                gpaField.clear();
-//                genderBox.setValue("Gender");
-//            }
-//        }
+    public void handleSearchButtonClick(ActionEvent event) {
+        dataBaseConnector = new DataBaseConnector();
+        if (filterInput.getText().equals("*")) {
+//            System.out.println("Filtr wyszukiwan jest pusty!");
+            List<ItemPrice> itemPrices = dataBaseConnector.getItemPrces();
+            for (ItemPrice ip : itemPrices) {
+                observableItemList.add(ip);
+            }
+        }else if (!filterInput.getText().equals("")) {
+//            System.out.println("Filtr wyszukiwan: " + filterInput.getText());
+            List<ItemPrice> itemPrices = dataBaseConnector.getItemPrcesOf(filterInput.getText());
+            for (ItemPrice ip : itemPrices) {
+                observableItemList.add(ip);
+
+            }
+        } else {
+            Alert emptyFilter = new Alert(Alert.AlertType.WARNING, "Pusty filr zapytan!", ButtonType.OK);
+            Window owner = ((Node) event.getTarget()).getScene().getWindow();
+            emptyFilter.setContentText("Wpisz * by wyswietlic wszystkie krotki");
+            emptyFilter.initModality(Modality.APPLICATION_MODAL);
+            emptyFilter.initOwner(owner);
+            emptyFilter.showAndWait();
+        }
     }
-    /*
-    In case of empty fields. Gives alert for respective empty field and requests focus on that field.
-     */
+
+
+    public void handleAddButtonClick(ActionEvent event) {
+
+        if (isValidInput(event)) {
+            ItemPrice singleItemPrice = new ItemPrice();
+            singleItemPrice.setIDProdukt(Integer.parseInt(IDProduktField.getText()));
+            singleItemPrice.setIDMarket(Integer.parseInt(IDMarketField.getText()));
+            singleItemPrice.setWaga(Double.parseDouble(wagaField.getText()));
+            singleItemPrice.setIlosc(Integer.parseInt(iloscFieled.getText()));
+            singleItemPrice.setNazwa(nazwaField.getText());
+            singleItemPrice.setJednostka(jednostkaField.getText());
+            singleItemPrice.setCena(Double.parseDouble(cenaField.getText()));
+
+            dataBaseConnector = new DataBaseConnector();
+            dataBaseConnector.insertItemPrice(singleItemPrice);
+            clearFields();
+
+        } else {
+           clearFields();
+        }
+
+    }
     private boolean isValidInput(ActionEvent event) {
 
         Boolean validInput = true;
 
-        if(firstNameField == null || firstNameField.getText().trim().isEmpty()) {
+        if(IDProduktField == null || IDProduktField.getText().trim().isEmpty()) {
             validInput = false;
-            Alert emptyFirstName = new Alert(Alert.AlertType.WARNING, "Warning", ButtonType.OK);
+            Alert emptyIDProdukt = new Alert(Alert.AlertType.WARNING, "Warning", ButtonType.OK);
             Window owner = ((Node) event.getTarget()).getScene().getWindow();
-            emptyFirstName.setContentText("First name is EMPTY");
-            emptyFirstName.initModality(Modality.APPLICATION_MODAL);
-            emptyFirstName.initOwner(owner);
-            emptyFirstName.showAndWait();
-            if(emptyFirstName.getResult() == ButtonType.OK) {
-                emptyFirstName.close();
-                firstNameField.requestFocus();
+            emptyIDProdukt.setContentText("IDProdukt is EMPTY");
+            emptyIDProdukt.initModality(Modality.APPLICATION_MODAL);
+            emptyIDProdukt.initOwner(owner);
+            emptyIDProdukt.showAndWait();
+            if(emptyIDProdukt.getResult() == ButtonType.OK) {
+                emptyIDProdukt.close();
+                IDProduktField.requestFocus();
             }
         }
-        if(lastNameField == null || lastNameField.getText().trim().isEmpty()) {
+        if(IDMarketField == null || IDMarketField.getText().trim().isEmpty()) {
             validInput = false;
-            Alert emptyLastName = new Alert(Alert.AlertType.WARNING, "Warning", ButtonType.OK);
+            Alert emptyIDMarket = new Alert(Alert.AlertType.WARNING, "Warning", ButtonType.OK);
             Window owner = ((Node) event.getTarget()).getScene().getWindow();
-            emptyLastName.setContentText("Last name is EMPTY");
-            emptyLastName.initModality(Modality.APPLICATION_MODAL);
-            emptyLastName.initOwner(owner);
-            emptyLastName.showAndWait();
-            if (emptyLastName.getResult() == ButtonType.OK) {
-                emptyLastName.close();
-                lastNameField.requestFocus();
+            emptyIDMarket.setContentText("IDMarket is EMPTY");
+            emptyIDMarket.initModality(Modality.APPLICATION_MODAL);
+            emptyIDMarket.initOwner(owner);
+            emptyIDMarket.showAndWait();
+            if (emptyIDMarket.getResult() == ButtonType.OK) {
+                emptyIDMarket.close();
+                IDMarketField.requestFocus();
             }
         }
-        if(uinField == null || uinField.getText().trim().isEmpty()) {
+        if(iloscFieled == null || iloscFieled.getText().trim().isEmpty()) {
             validInput = false;
             Alert emptyUIN = new Alert(Alert.AlertType.WARNING, "Warning", ButtonType.OK);
             Window owner = ((Node) event.getTarget()).getScene().getWindow();
@@ -291,10 +278,10 @@ public class Controller implements Initializable {
             emptyUIN.showAndWait();
             if (emptyUIN.getResult() == ButtonType.OK) {
                 emptyUIN.close();
-                uinField.requestFocus();
+                iloscFieled.requestFocus();
             }
         }
-        if(netIDField == null || netIDField.getText().trim().isEmpty()) {
+        if(nazwaField == null || nazwaField.getText().trim().isEmpty()) {
             validInput = false;
             Alert emptyNetID = new Alert(Alert.AlertType.WARNING, "Warning", ButtonType.OK);
             Window owner = ((Node) event.getTarget()).getScene().getWindow();
@@ -304,10 +291,10 @@ public class Controller implements Initializable {
             emptyNetID.showAndWait();
             if (emptyNetID.getResult() == ButtonType.OK) {
                 emptyNetID.close();
-                netIDField.requestFocus();
+                nazwaField.requestFocus();
             }
         }
-        if(majorField == null || majorField.getText().trim().isEmpty()) {
+        if(wagaField == null || wagaField.getText().trim().isEmpty()) {
             validInput = false;
             Alert emptyMajor = new Alert(Alert.AlertType.WARNING, "Warning", ButtonType.OK);
             Window owner = ((Node) event.getTarget()).getScene().getWindow();
@@ -317,10 +304,10 @@ public class Controller implements Initializable {
             emptyMajor.showAndWait();
             if (emptyMajor.getResult() == ButtonType.OK) {
                 emptyMajor.close();
-                majorField.requestFocus();
+                wagaField.requestFocus();
             }
         }
-        if(ageField == null || ageField.getText().trim().isEmpty()) {
+        if(jednostkaField == null || jednostkaField.getText().trim().isEmpty()) {
             validInput = false;
             Alert emptyAge = new Alert(Alert.AlertType.WARNING, "Warning", ButtonType.OK);
             Window owner = ((Node) event.getTarget()).getScene().getWindow();
@@ -330,10 +317,10 @@ public class Controller implements Initializable {
             emptyAge.showAndWait();
             if (emptyAge.getResult() == ButtonType.OK) {
                 emptyAge.close();
-                ageField.requestFocus();
+                jednostkaField.requestFocus();
             }
         }
-        if(gpaField == null || gpaField.getText().trim().isEmpty()) {
+        if(cenaField == null || cenaField.getText().trim().isEmpty()) {
             validInput = false;
             Alert emptyGPA = new Alert(Alert.AlertType.WARNING, "Warning", ButtonType.OK);
             Window owner = ((Node) event.getTarget()).getScene().getWindow();
@@ -343,27 +330,13 @@ public class Controller implements Initializable {
             emptyGPA.showAndWait();
             if (emptyGPA.getResult() == ButtonType.OK) {
                 emptyGPA.close();
-                gpaField.requestFocus();
+                cenaField.requestFocus();
             }
         }
-//        if(genderBox == null || genderBox.getValue().isEmpty()) {
-//            validInput = false;
-//            Alert emptyGender = new Alert(Alert.AlertType.WARNING, "Warning", ButtonType.OK);
-//            Window owner = ((Node) event.getTarget()).getScene().getWindow();
-//            emptyGender.setContentText("Gender is EMPTY");
-//            emptyGender.initModality(Modality.APPLICATION_MODAL);
-//            emptyGender.initOwner(owner);
-//            emptyGender.showAndWait();
-//            if (emptyGender.getResult() == ButtonType.OK) {
-//                emptyGender.close();
-//                genderBox.requestFocus();
-//            }
-//        }
         return validInput;
     }
-    /*
-    handle column edits
-     */
+
+    /*-------------------------------------------handle column edits---------------------------------------------------*/
     public void IDProdukt_OnEditCommit(Event e) {
         TableColumn.CellEditEvent<ItemPrice, Number> cellEditEvent;
         cellEditEvent = (TableColumn.CellEditEvent<ItemPrice, Number>) e;
@@ -430,28 +403,7 @@ public class Controller implements Initializable {
 //            }
 //        }
     }
-    public void handleSearchButtonClick(ActionEvent event) {
-        dataBaseConnector = new DataBaseConnector();
-        if (!filterInput.getText().equals("")) {
-            System.out.println("Filtr wyszukiwan: " + filterInput.getText());
-            List<ItemPrice> itemPrices = dataBaseConnector.getItemPrcesOf(filterInput.getText());
-            for (ItemPrice ip : itemPrices) {
-                observableItemList.add(ip);
 
-            }
-        } else {
-            System.out.println("Filtr wyszukiwan jest pusty!");
-            List<ItemPrice> itemPrices = dataBaseConnector.getItemPrces();
-            for (ItemPrice ip : itemPrices) {
-                observableItemList.add(ip);
-        }
-
-
-        }
-
-
-
-    }
     //filter table by first or last name
     public void filterStudentList(String oldValue, String newValue) {
 //        ObservableList<Student> filteredList = FXCollections.observableArrayList();
