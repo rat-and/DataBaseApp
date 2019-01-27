@@ -62,7 +62,7 @@
                 <configuration>
                     <classpathScope>test</classpathScope>
                     <!-- class name to execute -->
-                    <mainClass>StudentDatabase</mainClass>
+                    <mainClass>GUI.PriceComparerMain</mainClass>
                 </configuration>
                 <executions>
                     <execution>

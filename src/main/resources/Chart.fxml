@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<SplitPane dividerPositions="0.04904051172707889, 0.13219616204690832, 0.7953091684434968" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="471.0" prefWidth="602.0"
+           xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.ChartController">
+  <items>
+      <AnchorPane layoutX="10.0" layoutY="10.0" maxHeight="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="30.0" prefWidth="600.0">
+         <children>
+            <HBox prefHeight="20.0" prefWidth="600.0" />
+            <MenuBar fx:id="fileMenu" maxHeight="-Infinity" prefHeight="37.0" prefWidth="1010.0">
+               <menus>
+                  <Menu mnemonicParsing="false" text="File">
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#handleSave" text="Save" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleOpen" text="Open" />
+                     </items>
+                  </Menu>
+               </menus>
+            </MenuBar>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="10.0" layoutY="10.0" maxHeight="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="33.0" prefWidth="600.0">
+         <children>
+            <Text fill="#da0979" layoutX="223.0" layoutY="22.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Twój Koszyk" textAlignment="CENTER" wrappingWidth="154.13671875">
+               <font>
+                  <Font name="Harlow Solid Italic" size="24.0" />
+               </font>
+            </Text>
+         </children>
+      </AnchorPane>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="245.0" prefWidth="600.0">
+         <children>
+            <TableView fx:id="chartTable" layoutY="3.0" prefHeight="298.0" prefWidth="598.0">
+              <columns>
+                <TableColumn fx:id="nazwa" prefWidth="177.0" text="nazwa" />
+                <TableColumn fx:id="cena" prefWidth="106.0" text="cena" />
+                  <TableColumn fx:id="liczba" prefWidth="91.0" text="liczba" />
+                  <TableColumn fx:id="sklep" prefWidth="139.0" text="sklep" />
+                  <TableColumn fx:id="wartosc" prefWidth="84.0" text="wartosc" />
+              </columns>
+            </TableView>
+         </children></AnchorPane>
+      <AnchorPane maxHeight="-Infinity" prefHeight="93.0" prefWidth="600.0">
+         <children>
+            <TextField layoutX="181.0" layoutY="16.0" prefHeight="25.0" prefWidth="99.0" promptText="twoje środki" />
+            <Button layoutX="318.0" layoutY="16.0" mnemonicParsing="false" onAction="#handleAffordButtonClick" prefHeight="25.0" prefWidth="99.0" text="Stac mnie?" />
+            <Button layoutX="181.0" layoutY="52.0" mnemonicParsing="false" onAction="#handleCommitButtonClick" prefHeight="25.0" prefWidth="99.0" text="Zloz zamowinie" />
+            <Button layoutX="318.0" layoutY="52.0" mnemonicParsing="false" onAction="#handleCancelButtonClick" prefHeight="25.0" prefWidth="99.0" text="Zrezygnuj" />
+         </children>
+      </AnchorPane>
+  </items>
+</SplitPane>

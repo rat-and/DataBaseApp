@@ -1,6 +1,4 @@
-/**
- * Created by IRGeekSauce on 11/26/15.
- */
+package GUI;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -8,12 +6,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class StudentDatabase extends Application {
+public class PriceComparerMain extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("/StudentDatabaseFXML.fxml"));
-        primaryStage.setTitle("Student Database");
+        Parent root = FXMLLoader.load(getClass().getResource("/Comparer.fxml"));
+        primaryStage.setTitle("Price Comparer");
         primaryStage.setScene(new Scene(root, 1000, 800));
         primaryStage.show();
     }

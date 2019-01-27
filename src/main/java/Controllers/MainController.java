@@ -1,26 +1,30 @@
-/**
- * Created by IRGeekSauce on 11/26/15.
- */
+package Controllers;
 
+import GUI.Chart;
 import dbConnection.DataBaseConnector;
 import dbConnection.ItemPrice;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import javafx.util.Callback;
 import javafx.util.converter.NumberStringConverter;
 import java.io.*;
 import java.net.URL;
@@ -28,7 +32,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 
-public class Controller implements Initializable {
+public class MainController implements Initializable {
     private DataBaseConnector dataBaseConnector;
 
 
@@ -38,29 +42,29 @@ public class Controller implements Initializable {
     @FXML
     private URL location;
 
-    @FXML // fx:id="IDProdukt"
-    private TableColumn<ItemPrice, Number> IDProdukt;
-
-    @FXML // fx:id="IDMarket"
-    private TableColumn<ItemPrice, Number> IDMarket;
-
     @FXML // fx:id="nazwa"
     private TableColumn<ItemPrice, String> nazwa;
-
-    @FXML // fx:id="ilosc"
-    private TableColumn<ItemPrice, Number> ilosc;
-
-    @FXML // fx:id="waga"
-    private TableColumn<ItemPrice, Number> waga;
-
-    @FXML // fx:id="jednostka"
-    private TableColumn<ItemPrice, String> jednostka;
 
     @FXML // fx:id="cena"
     private TableColumn<ItemPrice, Number> cena;
 
-    @FXML // fx:id="promocja"
-    private TableColumn<ItemPrice, Number> promocja;
+    @FXML // fx:id="opinia"
+    private TableColumn<ItemPrice, Number> opinia;
+
+    @FXML // fx:id="sklep"
+    private TableColumn<ItemPrice, String> sklep;
+
+    @FXML // fx:id="opiniaSkl"
+    private TableColumn<ItemPrice, Number> opiniaSkl;
+
+    @FXML // fx:id="opis"
+    private TableColumn<ItemPrice, String> opis;
+
+//    @FXML // fx:id="cena"
+//    private TableColumn<ItemPrice, Number> cena;
+
+//    @FXML // fx:id="promocja"
+//    private TableColumn<ItemPrice, Number> promocja;
 
     @FXML // fx:id="IDProduktField"
     private TextField IDProduktField;
@@ -68,20 +72,20 @@ public class Controller implements Initializable {
     @FXML // fx:id="IDMarketField"
     private TextField IDMarketField;
 
-    @FXML // fx:id="iloscField"
-    private TextField iloscFieled;
+    @FXML // fx:id="nazwaField"
+    private TextField nazwaField;
 
-    @FXML // fx:id="jednostkaField"
-    private TextField jednostkaField;
+    @FXML // fx:id="opiniaField"
+    private TextField opiniaField;
+
+    @FXML // fx:id="opisField"
+    private TextField opisField;
 
     @FXML // fx:id="cenaField"
     private TextField cenaField;
 
-    @FXML // fx:id="wagaField"
-    private TextField wagaField;
-
-    @FXML // fx:id="nazwaField"
-    private TextField nazwaField;
+//    @FXML // fx:id="nazwaField"
+//    private TextField nazwaField;
 
     @FXML
     private TextField filterInput;
@@ -115,38 +119,78 @@ public class Controller implements Initializable {
         });
         //initialize editable attributes
         itemTable.setEditable(true);
-        IDProdukt.setOnEditCommit(e -> IDProdukt_OnEditCommit(e));
-        IDMarket.setOnEditCommit(e -> IDMarket_OnEditCommit(e));
         nazwa.setOnEditCommit(e -> nazwa_OnEditCommit(e));
-        ilosc.setOnEditCommit(e -> ilosc_OnEditCommit(e));
-        waga.setOnEditCommit(e -> waga_OnEditCommit(e));
-        jednostka.setOnEditCommit(e -> jednostka_OnEditCommit(e));
         cena.setOnEditCommit(e -> cena_OnEditCommit(e));
-        promocja.setOnEditCommit(e -> promocja_OnEditCommit(e));
+        opinia.setOnEditCommit(e -> opinia_OnEditCommit(e));
+        sklep.setOnEditCommit(e -> sklep_OnEditCommit(e));
+        opiniaSkl.setOnEditCommit(e -> opiniaSkl_OnEditCommit(e));
+        opis.setOnEditCommit(e -> opis_OnEditCommit(e));
 
         itemTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        IDProdukt.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
-        IDMarket.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
         nazwa.setCellFactory(TextFieldTableCell.forTableColumn());
-        ilosc.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
-        waga.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
-        jednostka.setCellFactory(TextFieldTableCell.forTableColumn());
         cena.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
-        promocja.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
+        opinia.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
+        sklep.setCellFactory(TextFieldTableCell.forTableColumn());
+        opiniaSkl.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
+        opis.setCellFactory(TextFieldTableCell.forTableColumn());
+
+        //Calling a row
+        itemTable.setRowFactory(new Callback<TableView<ItemPrice>, TableRow<ItemPrice>>() {
+            @Override
+            public TableRow<ItemPrice> call(TableView<ItemPrice> param) {
+                final TableRow<ItemPrice> row = new TableRow<>();
+                row.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    //Mouse click handling
+                    @Override
+                    public void handle(MouseEvent event) {
+                        if (event.getButton() == MouseButton.SECONDARY && row.getItem() != null) {
+
+                            final ContextMenu rowMenu = new ContextMenu();
+                            MenuItem addToChart = new MenuItem("Dodaj do koszyka");
+                            MenuItem deleteRow = new MenuItem("Usun z bazy");
+
+                            addToChart.setOnAction(new EventHandler<ActionEvent>() {
+                                @Override
+                                public void handle(ActionEvent event) {
+                                    ItemPrice singleItemPrice = row.getItem();
+                                    Observer.observableList.add(singleItemPrice.extend());
+                                    System.out.println(singleItemPrice.getName() + " added to observable list (chart)");
+                                }
+                            });
+
+                            deleteRow.setOnAction(new EventHandler<ActionEvent>() {
+                                @Override
+                                public void handle(ActionEvent event) {
+                                    System.out.println("Not yet implemented...");
+                                }
+                            });
+
+                            rowMenu.getItems().addAll(addToChart, deleteRow);
+                            row.contextMenuProperty().bind(
+                                    Bindings.when(Bindings.isNotNull(row.itemProperty()))
+                                    .then(rowMenu)
+                                    .otherwise((ContextMenu) null)
+                            );
+                        }
+                    }
+                });
+                return row;
+            }
+        });
 
 
-        IDProdukt.setCellValueFactory(cellData -> cellData.getValue().getIDProduktProperty());
-        IDMarket.setCellValueFactory(cellData -> cellData.getValue().getIDMarketProperty());
-        nazwa.setCellValueFactory(cellData -> cellData.getValue().getNazwaProperty());
-        ilosc.setCellValueFactory(cellData -> cellData.getValue().iloscProperty());
-        waga.setCellValueFactory(cellData -> cellData.getValue().wagaProperty());
-        jednostka.setCellValueFactory(cellData -> cellData.getValue().jednostkaProperty());
-        cena.setCellValueFactory(cellData -> cellData.getValue().cenaProperty());
-        promocja.setCellValueFactory(cellData -> cellData.getValue().promocjaProperty());
+        nazwa.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
+        cena.setCellValueFactory(cellData -> cellData.getValue().priceProperty());
+        opinia.setCellValueFactory(cellData -> cellData.getValue().opinionProperty());
+        sklep.setCellValueFactory(cellData -> cellData.getValue().marketProperty());
+        opiniaSkl.setCellValueFactory(cellData -> cellData.getValue().marketOpinionProperty());
+        opis.setCellValueFactory(cellData -> cellData.getValue().descriptionProperty());
+//        cena.setCellValueFactory(cellData -> cellData.getValue().cenaProperty());
+//        promocja.setCellValueFactory(cellData -> cellData.getValue().promocjaProperty());
 
         addBtn.setDisable(true);
-        deleteBtn.setDisable(true);
+//        deleteBtn.setDisable(true);
         itemTable.setItems(observableItemList);
         itemTable.setEditable(true);
         itemTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -161,24 +205,23 @@ public class Controller implements Initializable {
                 }
             }
         });
-        itemTable.focusedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                if (itemTable.isFocused()) {
-                    //TODO if admin or user
-                    deleteBtn.setDisable(false);
-                }
-            }
-        });
+//        itemTable.focusedProperty().addListener(new ChangeListener<Boolean>() {
+//            @Override
+//            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+//                if (itemTable.isFocused()) {
+//                    //TODO if admin or user
+//                    deleteBtn.setDisable(false);
+//                }
+//            }
+//        });
     }//end initializeo
 
     public void clearFields() {
         IDMarketField.clear();
         IDProduktField.clear();
-        iloscFieled.clear();
-        wagaField.clear();
         nazwaField.clear();
-        jednostkaField.clear();
+        opiniaField.clear();
+        opisField.clear();
         cenaField.clear();
     }
 
@@ -216,11 +259,10 @@ public class Controller implements Initializable {
             ItemPrice singleItemPrice = new ItemPrice();
             singleItemPrice.setIDProdukt(Integer.parseInt(IDProduktField.getText()));
             singleItemPrice.setIDMarket(Integer.parseInt(IDMarketField.getText()));
-            singleItemPrice.setWaga(Double.parseDouble(wagaField.getText()));
-            singleItemPrice.setIlosc(Integer.parseInt(iloscFieled.getText()));
-            singleItemPrice.setNazwa(nazwaField.getText());
-            singleItemPrice.setJednostka(jednostkaField.getText());
-            singleItemPrice.setCena(Double.parseDouble(cenaField.getText()));
+            singleItemPrice.setName(nazwaField.getText());
+            singleItemPrice.setPrice(Double.parseDouble(cenaField.getText()));
+            singleItemPrice.setOpinion(Double.parseDouble(opisField.getText()));
+            singleItemPrice.setDescription(opisField.getText());
 
             dataBaseConnector = new DataBaseConnector();
             dataBaseConnector.insertItemPrice(singleItemPrice);
@@ -261,7 +303,7 @@ public class Controller implements Initializable {
                 IDMarketField.requestFocus();
             }
         }
-        if(iloscFieled == null || iloscFieled.getText().trim().isEmpty()) {
+        if(nazwa == null || nazwa.getText().trim().isEmpty()) {
             validInput = false;
             Alert emptyUIN = new Alert(Alert.AlertType.WARNING, "Warning", ButtonType.OK);
             Window owner = ((Node) event.getTarget()).getScene().getWindow();
@@ -271,10 +313,10 @@ public class Controller implements Initializable {
             emptyUIN.showAndWait();
             if (emptyUIN.getResult() == ButtonType.OK) {
                 emptyUIN.close();
-                iloscFieled.requestFocus();
+                nazwaField.requestFocus();
             }
         }
-        if(nazwaField == null || nazwaField.getText().trim().isEmpty()) {
+        if(opisField == null || opisField.getText().trim().isEmpty()) {
             validInput = false;
             Alert emptyNetID = new Alert(Alert.AlertType.WARNING, "Warning", ButtonType.OK);
             Window owner = ((Node) event.getTarget()).getScene().getWindow();
@@ -284,10 +326,10 @@ public class Controller implements Initializable {
             emptyNetID.showAndWait();
             if (emptyNetID.getResult() == ButtonType.OK) {
                 emptyNetID.close();
-                nazwaField.requestFocus();
+                opisField.requestFocus();
             }
         }
-        if(wagaField == null || wagaField.getText().trim().isEmpty()) {
+        if(opiniaField == null || opiniaField.getText().trim().isEmpty()) {
             validInput = false;
             Alert emptyMajor = new Alert(Alert.AlertType.WARNING, "Warning", ButtonType.OK);
             Window owner = ((Node) event.getTarget()).getScene().getWindow();
@@ -297,22 +339,10 @@ public class Controller implements Initializable {
             emptyMajor.showAndWait();
             if (emptyMajor.getResult() == ButtonType.OK) {
                 emptyMajor.close();
-                wagaField.requestFocus();
+                opiniaField.requestFocus();
             }
         }
-        if(jednostkaField == null || jednostkaField.getText().trim().isEmpty()) {
-            validInput = false;
-            Alert emptyAge = new Alert(Alert.AlertType.WARNING, "Warning", ButtonType.OK);
-            Window owner = ((Node) event.getTarget()).getScene().getWindow();
-            emptyAge.setContentText("Age is EMPTY");
-            emptyAge.initModality(Modality.APPLICATION_MODAL);
-            emptyAge.initOwner(owner);
-            emptyAge.showAndWait();
-            if (emptyAge.getResult() == ButtonType.OK) {
-                emptyAge.close();
-                jednostkaField.requestFocus();
-            }
-        }
+
         if(cenaField == null || cenaField.getText().trim().isEmpty()) {
             validInput = false;
             Alert emptyGPA = new Alert(Alert.AlertType.WARNING, "Warning", ButtonType.OK);
@@ -330,7 +360,7 @@ public class Controller implements Initializable {
     }
 
     /*-------------------------------------------handle column edits---------------------------------------------------*/
-    public void IDProdukt_OnEditCommit(Event e) {
+    public void nazwa_OnEditCommit(Event e) {
         TableColumn.CellEditEvent<ItemPrice, Number> cellEditEvent;
         cellEditEvent = (TableColumn.CellEditEvent<ItemPrice, Number>) e;
         ItemPrice singleItemPrice = cellEditEvent.getRowValue();
@@ -342,7 +372,7 @@ public class Controller implements Initializable {
             singleItemPrice.setIDProdukt(cellEditEvent.getNewValue().intValue());
         }
     }
-    public void IDMarket_OnEditCommit(Event e) {
+    public void cena_OnEditCommit(Event e) {
         TableColumn.CellEditEvent<ItemPrice, Number> cellEditEvent;
         cellEditEvent = (TableColumn.CellEditEvent<ItemPrice, Number>) e;
         ItemPrice singleItemPrice = cellEditEvent.getRowValue();
@@ -357,13 +387,10 @@ public class Controller implements Initializable {
             singleItemPrice.setIDMarket(cellEditEvent.getNewValue().intValue());
         }
     }
-    public void nazwa_OnEditCommit(Event e) {
-        TableColumn.CellEditEvent<Student, String> cellEditEvent;
-        cellEditEvent = (TableColumn.CellEditEvent<Student, String>) e;
-        Student student = cellEditEvent.getRowValue();
-        student.setUin(cellEditEvent.getNewValue());
+    public void opinia_OnEditCommit(Event e) {
+
     }
-    public void ilosc_OnEditCommit(Event e) {
+    public void sklep_OnEditCommit(Event e) {
         TableColumn.CellEditEvent<ItemPrice, Number> cellEditEvent;
         cellEditEvent = (TableColumn.CellEditEvent<ItemPrice, Number>) e;
         ItemPrice singleItemPrice = cellEditEvent.getRowValue();
@@ -374,33 +401,21 @@ public class Controller implements Initializable {
             dataBaseConnector = new DataBaseConnector();
             //updateItemPrice(Object, column_number, new_value)
             dataBaseConnector.updateItemPrice_ilosc(singleItemPrice, cellEditEvent.getNewValue().intValue());
-            singleItemPrice.setIDMarket(cellEditEvent.getNewValue().intValue());
+//            singleItemPrice.setMarket(cellEditEvent.getNewValue());
         }
     }
-    public void waga_OnEditCommit(Event e) {
-        TableColumn.CellEditEvent<Student, String> cellEditEvent;
-        cellEditEvent = (TableColumn.CellEditEvent<Student, String>) e;
-        Student student = cellEditEvent.getRowValue();
-        student.setMajor(cellEditEvent.getNewValue());
+    public void opiniaSkl_OnEditCommit(Event e) {
+
     }
-    public void jednostka_OnEditCommit(Event e) {
-        TableColumn.CellEditEvent<Student, Integer> cellEditEvent;
-        cellEditEvent = (TableColumn.CellEditEvent<Student, Integer>) e;
-        Student student = cellEditEvent.getRowValue();
-        student.setAge(cellEditEvent.getNewValue());
+    public void opis_OnEditCommit(Event e) {
+
     }
-    public void cena_OnEditCommit(Event e) {
-        TableColumn.CellEditEvent<Student, Double> cellEditEvent;
-        cellEditEvent = (TableColumn.CellEditEvent<Student, Double>) e;
-        Student student = cellEditEvent.getRowValue();
-        student.setGradepoint(cellEditEvent.getNewValue());
-    }
-    public void promocja_OnEditCommit(Event e) {
-        TableColumn.CellEditEvent<Student, String> cellEditEvent;
-        cellEditEvent = (TableColumn.CellEditEvent<Student, String>) e;
-        Student student = cellEditEvent.getRowValue();
-        student.setGender(cellEditEvent.getNewValue());
-    }
+//    public void cena_OnEditCommit(Event e) {
+//
+//    }
+//    public void promocja_OnEditCommit(Event e) {
+//
+//    }
     public void handleDeleteButtonClick(ActionEvent event) {
 //        if(!observableStudentList.isEmpty()) {
 //            System.out.println("Delete button clicked");
@@ -418,6 +433,21 @@ public class Controller implements Initializable {
 //                deleteAlert.close();
 //            }
 //        }
+    }
+
+    public void handleChartButtonClick(ActionEvent event) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Chart chart = new Chart();
+                    chart.start(new Stage());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
     }
 
     //filter table by first or last name
@@ -461,24 +491,24 @@ public class Controller implements Initializable {
 //            }
 //        }
     }
-    public void saveFile(ObservableList<Student> observableStudentList, File file) {
-        try {
-            BufferedWriter outWriter = new BufferedWriter(new FileWriter(file));
-
-            for(Student students : observableStudentList) {
-                outWriter.write(students.toString());
-                outWriter.newLine();
-            }
-            System.out.println(observableStudentList.toString());
-            outWriter.close();
-        } catch (IOException e) {
-            Alert ioAlert = new Alert(Alert.AlertType.ERROR, "OOPS!", ButtonType.OK);
-            ioAlert.setContentText("Sorry. An error has occurred.");
-            ioAlert.showAndWait();
-            if(ioAlert.getResult() == ButtonType.OK) {
-                ioAlert.close();
-            }
-        }
+    public void saveFile(ObservableList<ItemPrice> observableStudentList, File file) {
+//        try {
+//            BufferedWriter outWriter = new BufferedWriter(new FileWriter(file));
+//
+//            for(ItemPrice ip : observableStudentList) {
+//                outWriter.write(students.toString());
+//                outWriter.newLine()i;
+//            }
+//            System.out.println(observableStudentList.toString());
+//            outWriter.close();
+//        } catch (IOException e) {
+//            Alert ioAlert = new Alert(Alert.AlertType.ERROR, "OOPS!", ButtonType.OK);
+//            ioAlert.setContentText("Sorry. An error has occurred.");
+//            ioAlert.showAndWait();
+//            if(ioAlert.getResult() == ButtonType.OK) {
+//                ioAlert.close();
+//            }
+//        }
     }
     public void closeApp(ActionEvent event) {
         Alert exitAlert = new Alert(Alert.AlertType.CONFIRMATION, "Confirm", ButtonType.OK, ButtonType.CANCEL);

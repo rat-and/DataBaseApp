@@ -7,7 +7,7 @@ import java.util.List;
 
 public class DataBaseConnector {
 
-    private final static String DBURL = "jdbc:mysql://127.0.0.1:3306/porownywarkacen?autoReconnect=true&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";      //schema's name
+    private final static String DBURL = "jdbc:mysql://127.0.0.1:3306/ceneo_2.0?autoReconnect=true&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";      //schema's name
     private final static String DBUSER = "root";    //username
     private final static String DBPASS = "mysql";   //user password
     private final static String DBDRIVER = "com.mysql.cj.jdbc.Driver";
@@ -16,7 +16,6 @@ public class DataBaseConnector {
     private Statement statement;
     private String query;
     private SQLParser sqlParser;
-    private String[] columns = {"IDProdukt", "IDMarket", "Nazwa", "Ilosc", "Waga", "Jednostka", "Cena"};
 
     public DataBaseConnector() {
         this.sqlParser = new SQLParser();
@@ -35,13 +34,15 @@ public class DataBaseConnector {
 
             while (resultSet.next()) {
                 singleItemPrice = new ItemPrice();
-                singleItemPrice.setIDProdukt(resultSet.getInt("IDProdukt"));
-                singleItemPrice.setIDMarket(resultSet.getInt("IDMarket"));
-                singleItemPrice.setNazwa(resultSet.getString("Nazwa"));
-                singleItemPrice.setIlosc(resultSet.getInt("Ilosc"));
-                singleItemPrice.setWaga(resultSet.getDouble("Waga"));
-                singleItemPrice.setJednostka(resultSet.getString("Jednostka"));
-                singleItemPrice.setCena(resultSet.getDouble("Cena"));
+                singleItemPrice.setIDProdukt(resultSet.getInt("item_id"));
+                singleItemPrice.setIDMarket(resultSet.getInt("store_id"));
+                singleItemPrice.setName(resultSet.getString("name"));
+                singleItemPrice.setMarket(resultSet.getString("store_name"));
+                singleItemPrice.setPrice(resultSet.getDouble("item_price"));
+                singleItemPrice.setOpinion(resultSet.getDouble("opinion"));
+                singleItemPrice.setWebAddres(resultSet.getString("web_addres"));
+                singleItemPrice.setDescription(resultSet.getString("description"));
+                singleItemPrice.setMarketOpinion(resultSet.getDouble("store_opinion"));
 
                 itemPrices.add(singleItemPrice);
             }
@@ -72,13 +73,15 @@ public class DataBaseConnector {
 
             while (resultSet.next()) {
                 singleItemPrice = new ItemPrice();
-                singleItemPrice.setIDProdukt(resultSet.getInt("IDProdukt"));
-                singleItemPrice.setIDMarket(resultSet.getInt("IDMarket"));
-                singleItemPrice.setNazwa(resultSet.getString("Nazwa"));
-                singleItemPrice.setIlosc(resultSet.getInt("Ilosc"));
-                singleItemPrice.setWaga(resultSet.getDouble("Waga"));
-                singleItemPrice.setJednostka(resultSet.getString("Jednostka"));
-                singleItemPrice.setCena(resultSet.getDouble("Cena"));
+                singleItemPrice.setIDProdukt(resultSet.getInt("item_id"));
+                singleItemPrice.setIDMarket(resultSet.getInt("store_id"));
+                singleItemPrice.setName(resultSet.getString("name"));
+                singleItemPrice.setMarket(resultSet.getString("store_name"));
+                singleItemPrice.setPrice(resultSet.getDouble("item_price"));
+                singleItemPrice.setOpinion(resultSet.getDouble("opinion"));
+                singleItemPrice.setWebAddres(resultSet.getString("web_addres"));
+                singleItemPrice.setDescription(resultSet.getString("description"));
+                singleItemPrice.setMarketOpinion(resultSet.getDouble("store_opinion"));
 
                 itemPrices.add(singleItemPrice);
             }
@@ -94,32 +97,32 @@ public class DataBaseConnector {
     }
 
     public void insertItemPrice(ItemPrice singleItemPrice) {
-        query = sqlParser.insertItemPriceQuery();
-
-        try {
-            Class.forName(DBDRIVER);
-            connection = DriverManager.getConnection(DBURL, DBUSER, DBPASS);
-            statement = connection.createStatement();
-
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1, singleItemPrice.getIDProdukt());
-            preparedStatement.setInt(2, singleItemPrice.getIDMarket());
-            preparedStatement.setString(3, singleItemPrice.getNazwa());
-            preparedStatement.setInt(4, singleItemPrice.getIlosc());
-            preparedStatement.setDouble(5, singleItemPrice.getWaga());
-            preparedStatement.setString(6, singleItemPrice.getJednostka());
-            preparedStatement.setDouble(7, singleItemPrice.getCena());
-            preparedStatement.setInt(8, 0);
-
-            preparedStatement.execute();
-
-            statement.close();
-            connection.close();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//        query = sqlParser.insertItemPriceQuery();
+//
+//        try {
+//            Class.forName(DBDRIVER);
+//            connection = DriverManager.getConnection(DBURL, DBUSER, DBPASS);
+//            statement = connection.createStatement();
+//
+//            PreparedStatement preparedStatement = connection.prepareStatement(query);
+//            preparedStatement.setInt(1, singleItemPrice.getIDProdukt());
+//            preparedStatement.setInt(2, singleItemPrice.getIDMarket());
+//            preparedStatement.setString(3, singleItemPrice.getName());
+//            preparedStatement.setInt(4, singleItemPrice.getIlosc());
+//            preparedStatement.setDouble(5, singleItemPrice.getOpinion());
+//            preparedStatement.setString(6, singleItemPrice.getDescription());
+//            preparedStatement.setDouble(7, singleItemPrice.getCena());
+//            preparedStatement.setInt(8, 0);
+//
+//            preparedStatement.execute();
+//
+//            statement.close();
+//            connection.close();
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
 
     }
 

@@ -1,18 +1,41 @@
+/**
+ * Class to represent query statement return from a data base
+ */
 package dbConnection;
 
+import Controllers.ItemPriceExtended;
 import javafx.beans.property.*;
 
 public class ItemPrice {
     private IntegerProperty IDProdukt = new SimpleIntegerProperty(this, "IDProdukt", 0);
     private IntegerProperty IDMarket = new SimpleIntegerProperty(this, "IDMarket", 0);
-    private StringProperty nazwa = new SimpleStringProperty(this, "nazwa", "");
-    private IntegerProperty ilosc = new SimpleIntegerProperty(this, "ilosc", 0);
-    private DoubleProperty waga = new SimpleDoubleProperty(this, "waga", 0.0);
-    private StringProperty jednostka = new SimpleStringProperty(this, "jednostka", "");
-    private DoubleProperty cena = new SimpleDoubleProperty(this, "cena", 0.0);
-//    private StringProperty poczatek = new SimpleStringProperty(this, "poczatek", "");
-//    private String koniec;
-    private IntegerProperty promocja = new SimpleIntegerProperty(this, "promocja", 0);
+    private StringProperty name = new SimpleStringProperty(this, "name", "");
+    private StringProperty market = new SimpleStringProperty(this, "market", "");
+    private DoubleProperty opinion = new SimpleDoubleProperty(this, "opinion", 0.0);
+    private StringProperty description = new SimpleStringProperty(this, "description", "");
+    private DoubleProperty price = new SimpleDoubleProperty(this, "price", 0.0);
+    private StringProperty webAddres = new SimpleStringProperty(this, "webAddres", "");
+    private DoubleProperty marketOpinion = new SimpleDoubleProperty(this, "marketOpinion", 0);
+
+    /**
+     * Extends this class by adding liczba and wartosc attribute
+     * so it's possible to add to Obserever.observablelist and then to a chart
+     */
+    public ItemPriceExtended extend() {
+        ItemPriceExtended extendedOne = new ItemPriceExtended();
+        extendedOne.setIDProdukt(this.getIDProdukt());
+        extendedOne.setIDMarket(this.getIDMarket());
+        extendedOne.setName(this.getName());
+        extendedOne.setMarket(this.getMarket());
+        extendedOne.setOpinion(this.getOpinion());
+        extendedOne.setDescription(this.getDescription());
+        extendedOne.setPrice(this.getPrice());
+        extendedOne.setWebAddres(this.getWebAddres());
+        extendedOne.setMarketOpinion(this.getMarketOpinion());
+        extendedOne.setLiczba(1);
+        extendedOne.setWartosc(this.getPrice());
+        return extendedOne;
+    }
 
     public int getIDProdukt() {
         return IDProdukt.get();
@@ -34,91 +57,87 @@ public class ItemPrice {
         this.IDMarket.set(IDMarket);
     }
 
-    public String getNazwa() {
-        return nazwa.get();
+    public String getName() {
+        return name.get();
     }
 
-    public StringProperty getNazwaProperty() {
-        return nazwa;
+    public StringProperty nameProperty() {
+        return name;
     }
 
-    public void setNazwa(String nazwa) {
-        this.nazwa.set(nazwa);
+    public void setName(String nazwa) {
+        this.name.set(nazwa);
     }
 
-    public int getIlosc() {
-        return ilosc.get();
+    public String getMarket() {
+        return market.get();
     }
 
-    public IntegerProperty iloscProperty() {
-        return ilosc;
+    public StringProperty marketProperty() {
+        return market;
     }
 
-    public void setIlosc(int ilosc) {
-        this.ilosc.set(ilosc);
+    public void setMarket(String ilosc) {
+        this.market.set(ilosc);
     }
 
-    public double getWaga() {
-        return waga.get();
+    public double getOpinion() {
+        return opinion.get();
     }
 
-    public DoubleProperty wagaProperty() {
-        return waga;
+    public DoubleProperty opinionProperty() {
+        return opinion;
     }
 
-    public void setWaga(double waga) {
-        this.waga.set(waga);
+    public void setOpinion(double waga) {
+        this.opinion.set(waga);
     }
 
-    public String getJednostka() {
-        return jednostka.get();
+    public String getDescription() {
+        return description.get();
     }
 
-    public StringProperty jednostkaProperty() {
-        return jednostka;
+    public StringProperty descriptionProperty() {
+        return description;
     }
 
-    public void setJednostka(String jednostka) {
-        this.jednostka.set(jednostka);
+    public void setDescription(String jednostka) {
+        this.description.set(jednostka);
     }
 
-    public double getCena() {
-        return cena.get();
+    public double getPrice() {
+        return price.get();
     }
 
-    public DoubleProperty cenaProperty() {
-        return cena;
+    public DoubleProperty priceProperty() {
+        return price;
     }
 
-    public void setCena(double cena) {
-        this.cena.set(cena);
+    public void setPrice(double cena) {
+        this.price.set(cena);
     }
 
-    public int isPromocja() {
-        return promocja.get();
+    public String getWebAddres() {
+        return webAddres.get();
     }
 
-    public IntegerProperty promocjaProperty() {
-        return promocja;
+    public void setWebAddres(String poczatek) {
+        this.webAddres.set(poczatek);
     }
 
-    public void setPromocja(int promocja) {
-        this.promocja.set(promocja);
+    public StringProperty webAddresProperty() {
+        return webAddres;
     }
 
-//    public String getPoczatek() {
-//        return poczatek;
-//    }
+    public Double getMarketOpinion() {
+        return marketOpinion.get();
+    }
 
-//    public void setPoczatek(String poczatek) {
-//        this.poczatek = poczatek;
-//    }
+    public DoubleProperty marketOpinionProperty() {
+        return marketOpinion;
+    }
 
-//    public String getKoniec() {
-//        return koniec;
-//    }
-
-//    public void setKoniec(String koniec) {
-//        this.koniec = koniec;
-//    }
+    public void setMarketOpinion(Double koniec) {
+        this.marketOpinion.set(koniec);
+    }
 }
