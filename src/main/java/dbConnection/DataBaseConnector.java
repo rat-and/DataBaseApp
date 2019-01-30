@@ -24,6 +24,14 @@ public class DataBaseConnector {
         this.sqlParser = new SQLParser();
     }
 
+    public static void setDBUSER(String dbuser) {
+        DataBaseConnector.DBUSER = dbuser;
+    }
+
+    public static void setDBPASS(String dbpass) {
+        DataBaseConnector.DBPASS = dbpass;
+    }
+
     public List<ItemPrice> getItemPrces() {
         query = sqlParser.fetchAllItemPriceQuery();
         List<ItemPrice> itemPrices = new ArrayList<ItemPrice>();
@@ -99,14 +107,6 @@ public class DataBaseConnector {
         return itemPrices;
     }
 
-    public static void setDBUSER(String dbuser) {
-        DataBaseConnector.DBUSER = dbuser;
-    }
-
-    public static void setDBPASS(String dbpass) {
-        DataBaseConnector.DBPASS = dbpass;
-    }
-
     public void insertItemPrice(ItemPrice singleItemPrice) {
         query = sqlParser.insertItemPriceQuery_items();
 
@@ -152,11 +152,10 @@ public class DataBaseConnector {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 
-    public void updateItemPrice_IDMarket(ItemPrice singleItemPrice, int newValue) {
-        query = sqlParser.updateItemPriceQuery_IDMarket();
+    public void deleteItemPrice(ItemPrice singleItemPrice) {
+        query = sqlParser.deleteItemPriceQuery();
 
         try {
             Class.forName(DBDRIVER);
@@ -164,7 +163,30 @@ public class DataBaseConnector {
             statement = connection.createStatement();
 
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1, newValue);
+            preparedStatement.setInt(1, singleItemPrice.getIDProdukt());
+            preparedStatement.setInt(2, singleItemPrice.getIDMarket());
+
+            preparedStatement.execute();
+
+            statement.close();
+            connection.close();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateItemPrice_name(ItemPrice singleItemPrice, String newValue) {
+        query = sqlParser.updateItemPriceQuery_name();
+
+        try {
+            Class.forName(DBDRIVER);
+            connection = DriverManager.getConnection(DBURL, DBUSER, DBPASS);
+            statement = connection.createStatement();
+
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, newValue);
             preparedStatement.setInt(2, singleItemPrice.getIDProdukt());
 
             preparedStatement.execute();
@@ -177,6 +199,53 @@ public class DataBaseConnector {
             e.printStackTrace();
         }
 
+    }
+
+    public void updateItemPrice_price(ItemPrice singleItemPrice, Double newValue) {
+        query = sqlParser.updateItemPriceQuery_cena();
+
+        try {
+            Class.forName(DBDRIVER);
+            connection = DriverManager.getConnection(DBURL, DBUSER, DBPASS);
+            statement = connection.createStatement();
+
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setDouble(1, newValue);
+            preparedStatement.setInt(2, singleItemPrice.getIDProdukt());
+            preparedStatement.setInt(3, singleItemPrice.getIDMarket());
+
+            preparedStatement.execute();
+
+            statement.close();
+            connection.close();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateItemPrice_descrip(ItemPrice singleItemPrice, String newValue) {
+        query = sqlParser.updateItemPriceQuery_opis();
+
+        try {
+            Class.forName(DBDRIVER);
+            connection = DriverManager.getConnection(DBURL, DBUSER, DBPASS);
+            statement = connection.createStatement();
+
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, newValue);
+            preparedStatement.setInt(2, singleItemPrice.getIDProdukt());
+
+            preparedStatement.execute();
+
+            statement.close();
+            connection.close();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void updateItemPrice_ilosc(ItemPrice singleItemPrice, int newValue) {
@@ -200,7 +269,6 @@ public class DataBaseConnector {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 
     public void createTableForChart(String tab_name) {
@@ -274,6 +342,24 @@ public class DataBaseConnector {
             connection = DriverManager.getConnection(DBURL, DBUSER, DBPASS);
             statement = connection.createStatement();
             statement.executeUpdate(query);
+
+            statement.close();
+            connection.close();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void dumpToCSV(String tab_name, String file_name) {
+        query = sqlParser.dumpToCSVQuery(tab_name, file_name);
+
+        try {
+            Class.forName(DBDRIVER);
+            connection = DriverManager.getConnection(DBURL, DBUSER, DBPASS);
+            statement = connection.createStatement();
+            statement.executeQuery(query);
 
             statement.close();
             connection.close();

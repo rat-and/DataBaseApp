@@ -11,11 +11,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.converter.NumberStringConverter;
 
+import java.io.File;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -116,35 +118,30 @@ public class ChartController implements Initializable {
     }
 
     public void handleSave(ActionEvent event) {
-//        Alert exitAlert = new Alert(Alert.AlertType.CONFIRMATION, "Confirm", ButtonType.OK, ButtonType.CANCEL);
-//        Stage stage = (Stage) fileMenu.getScene().getWindow();
-//        exitAlert.setContentText("Are you sure you want to exit?");
-//        exitAlert.initModality(Modality.APPLICATION_MODAL);
-//        exitAlert.initOwner(stage);
-//        exitAlert.showAndWait();
-//
-//        if(exitAlert.getResult() == ButtonType.OK) {
-//            Platform.exit();
-//        }
-//        else {
-//            exitAlert.close();
-//        }
+        if (Observer.priviliges <= 2) {
+            DataBaseConnector dataBaseConnector = new DataBaseConnector();
+            DateFormat df = new SimpleDateFormat("yyyyMMdd_HHmmss");
+            String nameNdate = "backup_" + df.format(new Date()).toString();
+            String orderNdate =  "tmp_order_" + df.format(new Date()).toString();
+
+            if (popupAlert("Are sure you want to back up your chart?", "Please confirm")) {
+                dataBaseConnector.dropTableIfExists(orderNdate);
+                dataBaseConnector.createTableForChart(orderNdate);
+
+                dataBaseConnector.dumpToCSV(orderNdate, "chart_" + nameNdate);
+
+            }
+        } else {
+            popupAlert("You're not permitted make a chart backup.", "You're not a customer!");
+        }
     }
 
     public void handleOpen(ActionEvent event) {
-//        Alert exitAlert = new Alert(Alert.AlertType.CONFIRMATION, "Confirm", ButtonType.OK, ButtonType.CANCEL);
-//        Stage stage = (Stage) fileMenu.getScene().getWindow();
-//        exitAlert.setContentText("Are you sure you want to exit?");
-//        exitAlert.initModality(Modality.APPLICATION_MODAL);
-//        exitAlert.initOwner(stage);
-//        exitAlert.showAndWait();
-//
-//        if(exitAlert.getResult() == ButtonType.OK) {
-//            Platform.exit();
-//        }
-//        else {
-//            exitAlert.close();
-//        }
+        FileChooser fileChooser = new FileChooser();
+        File file = fileChooser.showOpenDialog((Stage) fileMenu.getScene().getWindow());
+        if (file != null) {
+//            openFile(file);
+        }
     }
 
 

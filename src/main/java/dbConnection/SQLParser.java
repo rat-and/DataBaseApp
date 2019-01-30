@@ -27,8 +27,23 @@ public class SQLParser {
         return query;
     }
 
-    public String updateItemPriceQuery_IDMarket() {
-        query = "UPDATE cenyproduktow SET IDMarket = ? WHERE IDProdukt = ?";
+    public String deleteItemPriceQuery() {
+        query = "DELETE FROM store_item WHERE item_id = ? AND store_id = ?";
+        return query;
+    }
+
+    public String updateItemPriceQuery_name() {
+        query = "UPDATE itmes SET name = ? WHERE item_id = ?";
+        return query;
+    }
+
+    public String updateItemPriceQuery_cena() {
+        query = "UPDATE store_item SET item_price = ? WHERE item_id = ? AND store_id = ?";
+        return query;
+    }
+
+    public String updateItemPriceQuery_opis() {
+        query = "UPDATE items SET description = ? WHERE item_id = ?";
         return query;
     }
 
@@ -62,6 +77,16 @@ public class SQLParser {
 
     public String finalizeOrderQuery(String budget, String tab_name) {
         query = "CALL finalize_order( " + budget + ", '" + tab_name + "' );";
+        return query;
+    }
+
+    public String dumpToCSVQuery(String tab_name, String file_name) {
+        //C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\
+        query = "SELECT * FROM " + tab_name +
+                " INTO OUTFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/" + file_name + ".csv'" +
+                " FIELDS TERMINATED BY ','" +
+                " ENCLOSED BY '\"'" +
+                " LINES TERMINATED BY '\\n'";
         return query;
     }
 }

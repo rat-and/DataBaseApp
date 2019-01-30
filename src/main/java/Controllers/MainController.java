@@ -29,6 +29,9 @@ import javafx.util.Callback;
 import javafx.util.converter.NumberStringConverter;
 import java.io.*;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -177,8 +180,15 @@ public class MainController implements Initializable {
                             deleteRow.setOnAction(new EventHandler<ActionEvent>() {
                                 @Override
                                 public void handle(ActionEvent event) {
-                                    //TODO DELETE
-                                    System.out.println("Not yet implemented...");
+                                    if (Observer.priviliges < 1) {
+                                        ItemPrice singleItemPrice = row.getItem();
+                                        if (popupAlert("Are you sure you want to delete this record?")) {
+                                            dataBaseConnector = new DataBaseConnector();
+                                            dataBaseConnector.deleteItemPrice(singleItemPrice);
+                                        }
+                                    } else {
+                                        popupAlert("You're not permitted to do that");
+                                    }
                                 }
                             });
 
@@ -202,8 +212,6 @@ public class MainController implements Initializable {
         sklep.setCellValueFactory(cellData -> cellData.getValue().marketProperty());
         opiniaSkl.setCellValueFactory(cellData -> cellData.getValue().marketOpinionProperty());
         opis.setCellValueFactory(cellData -> cellData.getValue().descriptionProperty());
-//        cena.setCellValueFactory(cellData -> cellData.getValue().cenaProperty());
-//        promocja.setCellValueFactory(cellData -> cellData.getValue().promocjaProperty());
 
         addBtn.setDisable(true);
         addMarketBtn.setDisable(true);
@@ -400,73 +408,71 @@ public class MainController implements Initializable {
             ItemPrice singleItemPrice = cellEditEvent.getRowValue();
             if (popupAlert("Potwierdzasz zmiane atrybutu: " + "nazwa z " + cellEditEvent.getOldValue()
                     + " na " + cellEditEvent.getNewValue() + " ?")) {
+                dataBaseConnector = new DataBaseConnector();
+                dataBaseConnector.updateItemPrice_name(singleItemPrice, cellEditEvent.getNewValue());
                 singleItemPrice.setName(cellEditEvent.getNewValue());
             }
         } else {
-            popupAlert("Brak uprawnien do edycji.");
+            popupAlert("You're not permitted to edit attributes");
+            itemTable.refresh();
         }
 
 
     }
     public void cena_OnEditCommit(Event e) {
-        TableColumn.CellEditEvent<ItemPrice, Number> cellEditEvent;
-        cellEditEvent = (TableColumn.CellEditEvent<ItemPrice, Number>) e;
-        ItemPrice singleItemPrice = cellEditEvent.getRowValue();
+        if (Observer.priviliges <= 1) {
+            TableColumn.CellEditEvent<ItemPrice, Number> cellEditEvent;
+            cellEditEvent = (TableColumn.CellEditEvent<ItemPrice, Number>) e;
+            ItemPrice singleItemPrice = cellEditEvent.getRowValue();
 
-        if (popupAlert("Potwierdzasz zmiane atrybutu: " + "IDMarket z " + cellEditEvent.getOldValue().intValue()
-                + " na " + cellEditEvent.getNewValue().intValue() + " ?")) {
-            dataBaseConnector = new DataBaseConnector();
-            //updateItemPrice(Object, column_number, new_value)
-            dataBaseConnector.updateItemPrice_IDMarket(singleItemPrice, cellEditEvent.getNewValue().intValue());
-            singleItemPrice.setIDMarket(cellEditEvent.getNewValue().intValue());
+            if (popupAlert("Potwierdzasz zmiane atrybutu: " + "cena z " + cellEditEvent.getOldValue().intValue()
+                    + " na " + cellEditEvent.getNewValue().intValue() + " ?")) {
+
+                dataBaseConnector = new DataBaseConnector();
+                dataBaseConnector.updateItemPrice_price(singleItemPrice, cellEditEvent.getNewValue().doubleValue());
+                singleItemPrice.setPrice(cellEditEvent.getNewValue().doubleValue());
+            }
+        } else {
+            popupAlert("You're not permitted to edit attributes");
+            itemTable.refresh();
         }
     }
     public void opinia_OnEditCommit(Event e) {
+        popupAlert("You're not permitted to edit this attribute");
+        itemTable.refresh();
+    }
 
-    }
     public void sklep_OnEditCommit(Event e) {
-        TableColumn.CellEditEvent<ItemPrice, Number> cellEditEvent;
-        cellEditEvent = (TableColumn.CellEditEvent<ItemPrice, Number>) e;
-        ItemPrice singleItemPrice = cellEditEvent.getRowValue();
-//        System.out.println(singleItemPrice.getIDMarket());
-//        System.out.println((cellEditEvent.getNewValue().intValue()));
-        if (popupAlert("Potwierdzasz zmiane atrybutu: " + "Ilosc z " + cellEditEvent.getOldValue().intValue()
-                + " na " + cellEditEvent.getNewValue().intValue() + " ?")) {
-            dataBaseConnector = new DataBaseConnector();
-            //updateItemPrice(Object, column_number, new_value)
-            dataBaseConnector.updateItemPrice_ilosc(singleItemPrice, cellEditEvent.getNewValue().intValue());
-//            singleItemPrice.setMarket(cellEditEvent.getNewValue());
-        }
+        popupAlert("You're not permitted to edit this attribute");
+        itemTable.refresh();
     }
+
     public void opiniaSkl_OnEditCommit(Event e) {
+        popupAlert("You're not permitted to edit attribute");
+        itemTable.refresh();
 
     }
     public void opis_OnEditCommit(Event e) {
+        if (Observer.priviliges <= 1) {
+            TableColumn.CellEditEvent<ItemPrice, String> cellEditEvent;
+            cellEditEvent = (TableColumn.CellEditEvent<ItemPrice, String>) e;
+            ItemPrice singleItemPrice = cellEditEvent.getRowValue();
 
+            if (popupAlert("Potwierdzasz zmiane atrybutu: " + "opis z " + cellEditEvent.getOldValue()
+                    + " na " + cellEditEvent.getNewValue() + " ?")) {
+
+                dataBaseConnector = new DataBaseConnector();
+                dataBaseConnector.updateItemPrice_descrip(singleItemPrice, cellEditEvent.getNewValue());
+                singleItemPrice.setDescription(cellEditEvent.getNewValue());
+            }
+        } else {
+            popupAlert("You're not permitted to edit attributes");
+            itemTable.refresh();
+        }
     }
-//    public void cena_OnEditCommit(Event e) {
-//
-//    }
-//    public void promocja_OnEditCommit(Event e) {
-//
-//    }
+
     public void handleDeleteButtonClick(ActionEvent event) {
-//        if(!observableStudentList.isEmpty()) {
-//            System.out.println("Delete button clicked");
-//            Alert deleteAlert = new Alert(Alert.AlertType.WARNING, "Confirm", ButtonType.OK, ButtonType.CANCEL);
-//            Window owner = ((Node) event.getTarget()).getScene().getWindow();
-//            deleteAlert.setContentText("Are you sure you want to delete this?\n\nTHIS CANNOT BE UNDONE.");
-//            deleteAlert.initModality(Modality.APPLICATION_MODAL);
-//            deleteAlert.initOwner(owner);
-//            deleteAlert.showAndWait();
-//            if(deleteAlert.getResult() == ButtonType.OK) {
-//                observableStudentList.removeAll(itemTable.getSelectionModel().getSelectedItems());
-//                itemTable.getSelectionModel().clearSelection();
-//            }
-//            else {
-//                deleteAlert.close();
-//            }
-//        }
+        //unnecessary
     }
 
     public void handleChartButtonClick(ActionEvent event) {
@@ -502,27 +508,19 @@ public class MainController implements Initializable {
 //        }
     }
     public void handleSave(ActionEvent event) {
-//        Stage secondaryStage = new Stage();
-//        FileChooser fileChooser = new FileChooser();
-//        fileChooser.setTitle("Save Student Table");
-//        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-//        if(observableStudentList.isEmpty()) {
-//            secondaryStage.initOwner(this.fileMenu.getScene().getWindow());
-//            Alert emptyTableAlert = new Alert(Alert.AlertType.ERROR, "EMPTY TABLE", ButtonType.OK);
-//            emptyTableAlert.setContentText("You have nothing to save");
-//            emptyTableAlert.initModality(Modality.APPLICATION_MODAL);
-//            emptyTableAlert.initOwner(this.fileMenu.getScene().getWindow());
-//            emptyTableAlert.showAndWait();
-//            if(emptyTableAlert.getResult() == ButtonType.OK) {
-//                emptyTableAlert.close();
-//            }
-//        }
-//        else {
-//            File file = fileChooser.showSaveDialog(secondaryStage);
-//            if(file != null) {
-//                saveFile(itemTable.getItems(), file);
-//            }
-//        }
+        if (Observer.priviliges < 1) {
+            DataBaseConnector dataBaseConnector = new DataBaseConnector();
+            DateFormat df = new SimpleDateFormat("yyyyMMdd_HHmmss");
+            String nameNdate = "backup_" + df.format(new Date()).toString();
+
+            if (popupAlert("Are sure you want to back up database?")) {
+                dataBaseConnector.dumpToCSV("items", "items_" + nameNdate);
+                dataBaseConnector.dumpToCSV("stores", "stores_" + nameNdate);
+                dataBaseConnector.dumpToCSV("store_item", "store_item_" + nameNdate);
+            }
+        } else {
+            popupAlert("You're not permitted make a backup.");
+        }
     }
 
     public void handleLogin(ActionEvent event) {
@@ -548,25 +546,6 @@ public class MainController implements Initializable {
         updateTitle();
     }
 
-    public void saveFile(ObservableList<ItemPrice> observableStudentList, File file) {
-//        try {
-//            BufferedWriter outWriter = new BufferedWriter(new FileWriter(file));
-//
-//            for(ItemPrice ip : observableStudentList) {
-//                outWriter.write(students.toString());
-//                outWriter.newLine()i;
-//            }
-//            System.out.println(observableStudentList.toString());
-//            outWriter.close();
-//        } catch (IOException e) {
-//            Alert ioAlert = new Alert(Alert.AlertType.ERROR, "OOPS!", ButtonType.OK);
-//            ioAlert.setContentText("Sorry. An error has occurred.");
-//            ioAlert.showAndWait();
-//            if(ioAlert.getResult() == ButtonType.OK) {
-//                ioAlert.close();
-//            }
-//        }
-    }
     public void closeApp(ActionEvent event) {
         Alert exitAlert = new Alert(Alert.AlertType.CONFIRMATION, "Confirm", ButtonType.OK, ButtonType.CANCEL);
         Stage stage = (Stage) fileMenu.getScene().getWindow();

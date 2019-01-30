@@ -78,7 +78,6 @@ public class LoginController implements Initializable {
 
     public void handleLogin() {
         if (usernameFiled.getText() != null) {
-            System.out.println(Observer.users.length);
             for (int i = 0; i < Observer.users.length; i++) {
                 if (usernameFiled.getText().equals(Observer.users[i]) && passwordField.getText().equals(Observer.passes[i])) {
                     DataBaseConnector.setDBUSER(Observer.users[i]);
