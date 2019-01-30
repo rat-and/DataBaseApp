@@ -187,7 +187,6 @@ public class MainController implements Initializable {
 //        promocja.setCellValueFactory(cellData -> cellData.getValue().promocjaProperty());
 
         addBtn.setDisable(true);
-        deleteBtn.setDisable(true);
 
         itemTable.setItems(observableItemList);
         itemTable.setEditable(true);
