@@ -1,5 +1,8 @@
 package dbConnection;
 
+import Controllers.ItemPriceExtended;
+import Controllers.Observer;
+
 import java.awt.event.ItemEvent;
 import java.sql.*;
 import java.util.ArrayList;
@@ -8,8 +11,8 @@ import java.util.List;
 public class DataBaseConnector {
 
     private final static String DBURL = "jdbc:mysql://127.0.0.1:3306/ceneo_2.0?autoReconnect=true&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";      //schema's name
-    private final static String DBUSER = "root";    //username
-    private final static String DBPASS = "mysql";   //user password
+    private static String DBUSER = Observer.users[2];    //default username
+    private static String DBPASS = Observer.passes[2];   //default user password
     private final static String DBDRIVER = "com.mysql.cj.jdbc.Driver";
 
     private Connection connection;
@@ -96,6 +99,14 @@ public class DataBaseConnector {
         return itemPrices;
     }
 
+    public static void setDBUSER(String dbuser) {
+        DataBaseConnector.DBUSER = dbuser;
+    }
+
+    public static void setDBPASS(String dbpass) {
+        DataBaseConnector.DBPASS = dbpass;
+    }
+
     public void insertItemPrice(ItemPrice singleItemPrice) {
 //        query = sqlParser.insertItemPriceQuery();
 //
@@ -174,4 +185,84 @@ public class DataBaseConnector {
 
     }
 
+    public void createTableForChart(String tab_name) {
+        query = sqlParser.createTableForChartQuery(tab_name);
+
+        try {
+            Class.forName(DBDRIVER);
+            connection = DriverManager.getConnection(DBURL, DBUSER, DBPASS);
+            statement = connection.createStatement();
+            statement.executeUpdate(query);
+
+            statement.close();
+            connection.close();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void dropTableIfExists(String tab_name) {
+        query = sqlParser.dropTableIfExistsQuery(tab_name);
+
+        try {
+            Class.forName(DBDRIVER);
+            connection = DriverManager.getConnection(DBURL, DBUSER, DBPASS);
+            statement = connection.createStatement();
+            statement.executeUpdate(query);
+
+            statement.close();
+            connection.close();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void insertTmpOrder(String tab_name, ItemPriceExtended item) {
+        query = sqlParser.insertTmpOrderQuery(tab_name);
+
+        try {
+            Class.forName(DBDRIVER);
+            connection = DriverManager.getConnection(DBURL, DBUSER, DBPASS);
+            statement = connection.createStatement();
+
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, item.getIDProdukt());
+            preparedStatement.setString(2, item.getName());
+            preparedStatement.setInt(3, item.getIDMarket());
+            preparedStatement.setString(4, item.getMarket());
+            preparedStatement.setInt(5, item.getLiczba());
+            preparedStatement.setDouble(6, item.getWartosc());
+
+            preparedStatement.execute();
+
+            statement.close();
+            connection.close();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void finalizeOrder(String budget, String tab_name) {
+        query = sqlParser.finalizeOrderQuery(budget, tab_name);
+
+        try {
+            Class.forName(DBDRIVER);
+            connection = DriverManager.getConnection(DBURL, DBUSER, DBPASS);
+            statement = connection.createStatement();
+            statement.executeUpdate(query);
+
+            statement.close();
+            connection.close();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

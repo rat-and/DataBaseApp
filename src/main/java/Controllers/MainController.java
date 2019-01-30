@@ -1,6 +1,7 @@
 package Controllers;
 
 import GUI.Chart;
+import GUI.Login;
 import dbConnection.DataBaseConnector;
 import dbConnection.ItemPrice;
 import javafx.application.Platform;
@@ -89,10 +90,6 @@ public class MainController implements Initializable {
 
     @FXML
     private TextField filterInput;
-
-//    @FXML // fx:id="genderBox"
-//    private ComboBox<String> genderBox;
-//    ObservableList<String> genderBoxData = FXCollections.observableArrayList();
 
     @FXML
     private TableView<ItemPrice> itemTable;
@@ -190,7 +187,8 @@ public class MainController implements Initializable {
 //        promocja.setCellValueFactory(cellData -> cellData.getValue().promocjaProperty());
 
         addBtn.setDisable(true);
-//        deleteBtn.setDisable(true);
+        deleteBtn.setDisable(true);
+
         itemTable.setItems(observableItemList);
         itemTable.setEditable(true);
         itemTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -199,8 +197,7 @@ public class MainController implements Initializable {
         IDProduktField.focusedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                if (IDProduktField.isFocused()) {
-                    //TODO if admin
+                if (IDProduktField.isFocused() && Observer.priviliges <= 1) {
                     addBtn.setDisable(false);
                 }
             }
@@ -361,26 +358,27 @@ public class MainController implements Initializable {
 
     /*-------------------------------------------handle column edits---------------------------------------------------*/
     public void nazwa_OnEditCommit(Event e) {
-        TableColumn.CellEditEvent<ItemPrice, Number> cellEditEvent;
-        cellEditEvent = (TableColumn.CellEditEvent<ItemPrice, Number>) e;
-        ItemPrice singleItemPrice = cellEditEvent.getRowValue();
-        System.out.println(singleItemPrice.getIDProdukt());
-        System.out.println((cellEditEvent.getNewValue().intValue()));
-        if (popupAlert("Potwierdzasz zmiane atrybutu: " + "IDProdukt z " + cellEditEvent.getOldValue().intValue()
-                + " na " + cellEditEvent.getNewValue().intValue() + " ?")) {
-            System.out.println("Potwierdzil");
-            singleItemPrice.setIDProdukt(cellEditEvent.getNewValue().intValue());
+        if (Observer.priviliges <= 1) {
+            TableColumn.CellEditEvent<ItemPrice, String> cellEditEvent;
+            cellEditEvent = (TableColumn.CellEditEvent<ItemPrice, String>) e;
+            ItemPrice singleItemPrice = cellEditEvent.getRowValue();
+            if (popupAlert("Potwierdzasz zmiane atrybutu: " + "nazwa z " + cellEditEvent.getOldValue()
+                    + " na " + cellEditEvent.getNewValue() + " ?")) {
+                singleItemPrice.setName(cellEditEvent.getNewValue());
+            }
+        } else {
+            popupAlert("Brak uprawnien do edycji.");
         }
+
+
     }
     public void cena_OnEditCommit(Event e) {
         TableColumn.CellEditEvent<ItemPrice, Number> cellEditEvent;
         cellEditEvent = (TableColumn.CellEditEvent<ItemPrice, Number>) e;
         ItemPrice singleItemPrice = cellEditEvent.getRowValue();
-//        System.out.println(singleItemPrice.getIDMarket());
-//        System.out.println((cellEditEvent.getNewValue().intValue()));
+
         if (popupAlert("Potwierdzasz zmiane atrybutu: " + "IDMarket z " + cellEditEvent.getOldValue().intValue()
                 + " na " + cellEditEvent.getNewValue().intValue() + " ?")) {
-//            System.out.println("Potwierdzil dla id" + singleItemPrice.getIDProdukt());
             dataBaseConnector = new DataBaseConnector();
             //updateItemPrice(Object, column_number, new_value)
             dataBaseConnector.updateItemPrice_IDMarket(singleItemPrice, cellEditEvent.getNewValue().intValue());
@@ -447,7 +445,6 @@ public class MainController implements Initializable {
                 }
             }
         });
-
     }
 
     //filter table by first or last name
@@ -491,6 +488,21 @@ public class MainController implements Initializable {
 //            }
 //        }
     }
+
+    public void handleLogin(ActionEvent event) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Login login = new Login();
+                    login.start(new Stage());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
     public void saveFile(ObservableList<ItemPrice> observableStudentList, File file) {
 //        try {
 //            BufferedWriter outWriter = new BufferedWriter(new FileWriter(file));

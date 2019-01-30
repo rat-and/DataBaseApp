@@ -3,6 +3,7 @@
  * just to make it work by the dead line :D
  * Helps in communication between Chart and PriceComparer
  * - stores the items meant to be in the chart
+ * also stores sensitive info about login and password :(
  */
 package Controllers;
 
@@ -11,5 +12,11 @@ import javafx.collections.ObservableList;
 
 public class Observer {
     public static ObservableList<ItemPriceExtended> observableList = FXCollections.observableArrayList();
+    public static String[] users = {"root", "employee", "customer"};
+    public static String[] passes = {"mysql", "ilovemyjob", ""};
+    public static int priviliges = 2;
 
+    public static void setPriviliges(int priviliges) {
+        Observer.priviliges = priviliges;
+    }
 }

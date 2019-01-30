@@ -39,18 +39,18 @@
               <columns>
                 <TableColumn fx:id="nazwa" prefWidth="177.0" text="nazwa" />
                 <TableColumn fx:id="cena" prefWidth="106.0" text="cena" />
-                  <TableColumn fx:id="liczba" prefWidth="91.0" text="liczba" />
-                  <TableColumn fx:id="sklep" prefWidth="139.0" text="sklep" />
-                  <TableColumn fx:id="wartosc" prefWidth="84.0" text="wartosc" />
+                <TableColumn fx:id="liczba" prefWidth="91.0" text="liczba" />
+                <TableColumn fx:id="sklep" prefWidth="139.0" text="sklep" />
+                <TableColumn fx:id="wartosc" prefWidth="84.0" text="wartosc" />
               </columns>
             </TableView>
          </children></AnchorPane>
       <AnchorPane maxHeight="-Infinity" prefHeight="93.0" prefWidth="600.0">
          <children>
-            <TextField layoutX="181.0" layoutY="16.0" prefHeight="25.0" prefWidth="99.0" promptText="twoje środki" />
-            <Button layoutX="318.0" layoutY="16.0" mnemonicParsing="false" onAction="#handleAffordButtonClick" prefHeight="25.0" prefWidth="99.0" text="Stac mnie?" />
-            <Button layoutX="181.0" layoutY="52.0" mnemonicParsing="false" onAction="#handleCommitButtonClick" prefHeight="25.0" prefWidth="99.0" text="Zloz zamowinie" />
-            <Button layoutX="318.0" layoutY="52.0" mnemonicParsing="false" onAction="#handleCancelButtonClick" prefHeight="25.0" prefWidth="99.0" text="Zrezygnuj" />
+            <TextField fx:id="moneyField" layoutX="181.0" layoutY="16.0" prefHeight="25.0" prefWidth="99.0" promptText="twoje środki" />
+            <Button fx:id="affordBtn" layoutX="318.0" layoutY="16.0" mnemonicParsing="false" onAction="#handleAffordButtonClick" prefHeight="25.0" prefWidth="99.0" text="Stac mnie?" />
+            <Button fx:id="orderBtn" layoutX="181.0" layoutY="52.0" mnemonicParsing="false" onAction="#handleCommitButtonClick" prefHeight="25.0" prefWidth="99.0" text="Zloz zamowinie" />
+            <Button fx:id="cancelBtn" layoutX="318.0" layoutY="52.0" mnemonicParsing="false" onAction="#handleCancelButtonClick" prefHeight="25.0" prefWidth="99.0" text="Zrezygnuj" />
          </children>
       </AnchorPane>
   </items>

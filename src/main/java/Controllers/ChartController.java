@@ -17,10 +17,15 @@ import javafx.util.Callback;
 import javafx.util.converter.NumberStringConverter;
 
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 public class ChartController implements Initializable {
     ObservableList<ItemPriceExtended> observableList = FXCollections.observableArrayList();
+    private double totalValue = 0.0;
+    private Date date;
 
     @FXML
     private ResourceBundle resourceBundle;
@@ -44,10 +49,31 @@ public class ChartController implements Initializable {
     private TableColumn<ItemPriceExtended, Number> wartosc;
 
     @FXML
+    private TextField moneyField;
+
+    @FXML
+    private Button orderBtn;
+
+    @FXML
+    private Button cancelBtn;
+
+    @FXML
     private TableView<ItemPriceExtended> chartTable;
 
     @FXML
     private MenuBar fileMenu;
+
+    public void setTotalValue(double totalValue) {
+        this.totalValue = totalValue;
+    }
+
+    public double getTotalValue() {
+        return totalValue;
+    }
+
+    public void addToTotalValue(double add) {
+        this.totalValue += add;
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -64,12 +90,6 @@ public class ChartController implements Initializable {
         nazwa.setCellFactory(TextFieldTableCell.forTableColumn());
         cena.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
         liczba.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
-//        liczba.setCellFactory(new Callback<TableColumn<ItemPriceExtended, Number>, TableCell<ItemPriceExtended, Number>>() {
-//            @Override
-//            public TableCell<ItemPriceExtended, Number> call(TableColumn<ItemPriceExtended, Number> param) {
-//                final TableCell<ItemPriceExtended >
-//            }
-//        });
         sklep.setCellFactory(TextFieldTableCell.forTableColumn());
         wartosc.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
 
@@ -78,6 +98,8 @@ public class ChartController implements Initializable {
         liczba.setCellValueFactory(cellData -> cellData.getValue().liczbaProperty());
         sklep.setCellValueFactory(cellData -> cellData.getValue().marketProperty());
         wartosc.setCellValueFactory(cellData -> cellData.getValue().wartoscProperty());
+
+        orderBtn.setDisable(true);
 
         chartTable.setItems(Observer.observableList);
         chartTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -125,31 +147,68 @@ public class ChartController implements Initializable {
 //        }
     }
 
+
     public void handleCommitButtonClick(ActionEvent event) {
-        System.out.println("Zaakceptowano zamowienie");
+        DataBaseConnector dataBaseConnector = new DataBaseConnector();
+        DateFormat df = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        String orderNdate =  "tmp_order_" + df.format(new Date()).toString();
+
+        dataBaseConnector.dropTableIfExists(orderNdate);
+        dataBaseConnector.createTableForChart(orderNdate);
+        for (ItemPriceExtended ipe : Observer.observableList) {
+            dataBaseConnector.insertTmpOrder(orderNdate, ipe);
+        }
+        dataBaseConnector.finalizeOrder(moneyField.getText(), orderNdate);
+        popupAlert("Przekazano zamowienie do realizacji. Nazwa zamowienia: " + orderNdate, "Realizacja zamowienia");
     }
 
     public void handleAffordButtonClick(ActionEvent event) {
-        System.out.println("Dupa");
+
+        if (moneyField.getText() == null || moneyField.getText().equals("")) {
+            popupAlert("Brak srodkow!", "Dostepne srodki");
+            return;
+        } else {
+            setTotalValue(0.0);
+            for (ItemPriceExtended ipe : Observer.observableList) {
+                addToTotalValue(ipe.getWartosc());
+            }
+            if (Double.parseDouble(moneyField.getText()) >= getTotalValue()) {
+                popupAlert("Srodki sa wystarczajace. Mozna przejsc do zamowienia", "Dostepne srodki");
+                orderBtn.setDisable(false);
+            } else {
+                popupAlert("Niewystarczajce srodki", "Dostepne srodki");
+                orderBtn.setDisable(true);
+            }
+        }
     }
 
+
     public void handleCancelButtonClick(ActionEvent event) {
-//        if(!observableStudentList.isEmpty()) {
-//            System.out.println("Delete button clicked");
-//            Alert deleteAlert = new Alert(Alert.AlertType.WARNING, "Confirm", ButtonType.OK, ButtonType.CANCEL);
-//            Window owner = ((Node) event.getTarget()).getScene().getWindow();
-//            deleteAlert.setContentText("Are you sure you want to delete this?\n\nTHIS CANNOT BE UNDONE.");
-//            deleteAlert.initModality(Modality.APPLICATION_MODAL);
-//            deleteAlert.initOwner(owner);
-//            deleteAlert.showAndWait();
-//            if(deleteAlert.getResult() == ButtonType.OK) {
-//                observableStudentList.removeAll(itemTable.getSelectionModel().getSelectedItems());
-//                itemTable.getSelectionModel().clearSelection();
-//            }
-//            else {
-//                deleteAlert.close();
-//            }
-//        }
+        if (popupAlert("Na pewno chcesz zrezygnowac?", "Rezygnacja z zamowienia")) {
+            Observer.observableList.clear();
+            Stage stage = (Stage) cancelBtn.getScene().getWindow();
+            stage.close();
+        }
+    }
+
+    public boolean popupAlert(String msg, String head) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Information", ButtonType.OK, ButtonType.CANCEL);
+        Stage owner = (Stage) fileMenu.getScene().getWindow();
+        alert.setTitle("Information");
+        alert.setHeaderText(head);
+        alert.setContentText(msg);
+        alert.initModality(Modality.APPLICATION_MODAL);
+        alert.initOwner(owner);
+        alert.showAndWait();
+
+        if(alert.getResult() == ButtonType.OK) {
+            alert.close();
+            return true;
+        }
+        else {
+            alert.close();
+            return false;
+        }
     }
 
 }

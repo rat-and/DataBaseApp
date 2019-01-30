@@ -1,5 +1,7 @@
 package dbConnection;
 
+import Controllers.ItemPriceExtended;
+
 public class SQLParser {
     private String query;
 
@@ -27,6 +29,34 @@ public class SQLParser {
 
     public String updateItemPriceQuery_ilosc() {
         query = "UPDATE cenyproduktow SET Ilosc = ? WHERE IDProdukt = ?";
+        return query;
+    }
+
+    public String createTableForChartQuery(String tab_name) {
+        query = "CREATE TABLE " + tab_name + " (" +
+                    " item_id INT NOT NULL," +
+                    " item_name VARCHAR(255) NOT NULL," +
+                    " store_id INT NOT NULL," +
+                    " store_name VARCHAR(255)," +
+                    " amount INT UNSIGNED," +
+                    " cost DOUBLE NOT NULL" +
+                " );";
+        return query;
+    }
+
+    public String dropTableIfExistsQuery(String tab_name) {
+        query = "DROP TABLE IF EXISTS " + tab_name + ";";
+        return query;
+    }
+
+    public String insertTmpOrderQuery(String tab_name) {
+        query = "INSERT INTO " + tab_name + " (item_id, item_name, store_id, store_name, amount, cost)" +
+                " VALUES(?, ?, ?, ?, ?, ?)";
+        return query;
+    }
+
+    public String finalizeOrderQuery(String budget, String tab_name) {
+        query = "CALL finalize_order( " + budget + ", '" + tab_name + "' );";
         return query;
     }
 }

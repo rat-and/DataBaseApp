@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="220.0" prefWidth="447.0" style="-fx-background-color: FFFFFF;" xmlns="http://javafx.com/javafx/8" fx:controller="Controllers.LoginController" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Text layoutX="30.0" layoutY="45.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Log in" wrappingWidth="161.13671875">
+         <font>
+            <Font name="Rockwell Extra Bold" size="24.0" />
+         </font>
+      </Text>
+      <TextField fx:id="usernameFiled" layoutX="224.0" layoutY="66.0" prefHeight="29.0" prefWidth="149.0">
+         <font>
+            <Font name="Rockwell Condensed" size="14.0" />
+         </font>
+      </TextField>
+      <Text layoutX="62.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" text="user name:" textAlignment="CENTER" wrappingWidth="161.13671875">
+         <font>
+            <Font name="Rockwell Condensed" size="18.0" />
+         </font>
+      </Text>
+      <PasswordField fx:id="passwordField" layoutX="224.0" layoutY="113.0" prefHeight="29.0" prefWidth="149.0">
+         <font>
+            <Font name="Rockwell Condensed" size="14.0" />
+         </font>
+      </PasswordField>
+      <Text layoutX="62.0" layoutY="134.0" strokeType="OUTSIDE" strokeWidth="0.0" text="password:" textAlignment="CENTER" wrappingWidth="161.13671875">
+         <font>
+            <Font name="Rockwell Condensed" size="18.0" />
+         </font>
+      </Text>
+      <Button fx:id="loginBtn" layoutX="276.0" layoutY="164.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="97.0" onAction="#handleLogin" text="Log in">
+         <font>
+            <Font name="Rockwell Condensed" size="14.0" />
+         </font>
+      </Button>
+   </children>
+   <effect>
+      <InnerShadow />
+   </effect>
+</AnchorPane>
