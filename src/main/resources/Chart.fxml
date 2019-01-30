@@ -5,8 +5,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<SplitPane dividerPositions="0.04904051172707889, 0.13219616204690832, 0.7953091684434968" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="471.0" prefWidth="602.0"
-           xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.ChartController">
+<SplitPane dividerPositions="0.04904051172707889, 0.13219616204690832, 0.7953091684434968" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="471.0" prefWidth="602.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.ChartController">
   <items>
       <AnchorPane layoutX="10.0" layoutY="10.0" maxHeight="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="30.0" prefWidth="600.0">
          <children>
@@ -26,9 +25,9 @@
       </AnchorPane>
       <AnchorPane layoutX="10.0" layoutY="10.0" maxHeight="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="33.0" prefWidth="600.0">
          <children>
-            <Text fill="#da0979" layoutX="223.0" layoutY="22.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Twój Koszyk" textAlignment="CENTER" wrappingWidth="154.13671875">
+            <Text layoutX="223.0" layoutY="22.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Kosz Twój" textAlignment="CENTER" wrappingWidth="154.13671875">
                <font>
-                  <Font name="Harlow Solid Italic" size="24.0" />
+                  <Font name="Rockwell Condensed Bold" size="24.0" />
                </font>
             </Text>
          </children>

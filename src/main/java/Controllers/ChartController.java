@@ -149,17 +149,21 @@ public class ChartController implements Initializable {
 
 
     public void handleCommitButtonClick(ActionEvent event) {
-        DataBaseConnector dataBaseConnector = new DataBaseConnector();
-        DateFormat df = new SimpleDateFormat("yyyyMMdd_HHmmss");
-        String orderNdate =  "tmp_order_" + df.format(new Date()).toString();
+        if (Observer.priviliges <= 2) {
+            DataBaseConnector dataBaseConnector = new DataBaseConnector();
+            DateFormat df = new SimpleDateFormat("yyyyMMdd_HHmmss");
+            String orderNdate =  "tmp_order_" + df.format(new Date()).toString();
 
-        dataBaseConnector.dropTableIfExists(orderNdate);
-        dataBaseConnector.createTableForChart(orderNdate);
-        for (ItemPriceExtended ipe : Observer.observableList) {
-            dataBaseConnector.insertTmpOrder(orderNdate, ipe);
+            dataBaseConnector.dropTableIfExists(orderNdate);
+            dataBaseConnector.createTableForChart(orderNdate);
+            for (ItemPriceExtended ipe : Observer.observableList) {
+                dataBaseConnector.insertTmpOrder(orderNdate, ipe);
+            }
+            dataBaseConnector.finalizeOrder(moneyField.getText(), orderNdate);
+            popupAlert("Przekazano zamowienie do realizacji. Nazwa zamowienia: " + orderNdate, "Realizacja zamowienia");
+        } else {
+            popupAlert("Jesteś widzem! W celu złożenia zamowienia zaloguj sie jako customer ", "Realizacja zamowienia");
         }
-        dataBaseConnector.finalizeOrder(moneyField.getText(), orderNdate);
-        popupAlert("Przekazano zamowienie do realizacji. Nazwa zamowienia: " + orderNdate, "Realizacja zamowienia");
     }
 
     public void handleAffordButtonClick(ActionEvent event) {

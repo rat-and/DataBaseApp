@@ -97,11 +97,29 @@ public class MainController implements Initializable {
     @FXML // fx:id="addBtn"
     private Button addBtn;
 
-    @FXML // fx:id="deleteBtn"
-    private Button deleteBtn;
+    @FXML
+    private Button addMarketBtn;
+
+    @FXML
+    private Button delMarketBtn;
+
+    @FXML
+    private Button delRecBtn;
+
+    @FXML
+    private Button chartBtn;
+
+    @FXML
+    private SplitPane mainSplitPane;
 
     @FXML
     private MenuBar fileMenu;
+
+    @FXML
+    private MenuItem customerMenuItem;
+
+    @FXML
+    private MenuItem loginMenuItem;
 
     ObservableList<ItemPrice> observableItemList = FXCollections.observableArrayList();
 
@@ -159,6 +177,7 @@ public class MainController implements Initializable {
                             deleteRow.setOnAction(new EventHandler<ActionEvent>() {
                                 @Override
                                 public void handle(ActionEvent event) {
+                                    //TODO DELETE
                                     System.out.println("Not yet implemented...");
                                 }
                             });
@@ -187,29 +206,47 @@ public class MainController implements Initializable {
 //        promocja.setCellValueFactory(cellData -> cellData.getValue().promocjaProperty());
 
         addBtn.setDisable(true);
+        addMarketBtn.setDisable(true);
+        delMarketBtn.setDisable(true);
+        delRecBtn.setDisable(true);
 
         itemTable.setItems(observableItemList);
         itemTable.setEditable(true);
         itemTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         itemTable.setPlaceholder(new Label("Your Table is Empty"));
 
-        IDProduktField.focusedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                if (IDProduktField.isFocused() && Observer.priviliges <= 1) {
-                    addBtn.setDisable(false);
-                }
-            }
-        });
-//        itemTable.focusedProperty().addListener(new ChangeListener<Boolean>() {
+//        IDProduktField.focusedProperty().addListener(new ChangeListener<Boolean>() {
 //            @Override
 //            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-//                if (itemTable.isFocused()) {
-//                    //TODO if admin or user
-//                    deleteBtn.setDisable(false);
+//                if (IDProduktField.isFocused() && Observer.priviliges <= 1) {
+//                    addBtn.setDisable(false);
 //                }
 //            }
 //        });
+
+        //updates window title and buttons
+        itemTable.setOnMouseMoved(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                updateTitle();
+                if (Observer.priviliges < 1) {
+                    addBtn.setDisable(false);
+                    addMarketBtn.setDisable(false);
+                    delMarketBtn.setDisable(false);
+                    delRecBtn.setDisable(false);
+                } else if (Observer.priviliges < 2) {
+                    addBtn.setDisable(false);
+                    addMarketBtn.setDisable(true);
+                    delMarketBtn.setDisable(true);
+                    delRecBtn.setDisable(true);
+                } else {
+                    addBtn.setDisable(true);
+                    addMarketBtn.setDisable(true);
+                    delMarketBtn.setDisable(true);
+                    delRecBtn.setDisable(true);
+                }
+            }
+        });
     }//end initializeo
 
     public void clearFields() {
@@ -257,7 +294,7 @@ public class MainController implements Initializable {
             singleItemPrice.setIDMarket(Integer.parseInt(IDMarketField.getText()));
             singleItemPrice.setName(nazwaField.getText());
             singleItemPrice.setPrice(Double.parseDouble(cenaField.getText()));
-            singleItemPrice.setOpinion(Double.parseDouble(opisField.getText()));
+            singleItemPrice.setOpinion(Double.parseDouble(opiniaField.getText()));
             singleItemPrice.setDescription(opisField.getText());
 
             dataBaseConnector = new DataBaseConnector();
@@ -500,6 +537,15 @@ public class MainController implements Initializable {
                 }
             }
         });
+        updateTitle();
+    }
+
+    public void handleLoginAsCustomer(ActionEvent event) {
+        DataBaseConnector.setDBUSER(Observer.users[2]);
+        DataBaseConnector.setDBPASS(Observer.passes[2]);
+        Observer.setPriviliges(2);
+        popupAlert("You were sucessfully logged as a customer! Now, you may start shopping :)");
+        updateTitle();
     }
 
     public void saveFile(ObservableList<ItemPrice> observableStudentList, File file) {
@@ -553,6 +599,11 @@ public class MainController implements Initializable {
             alert.close();
             return false;
         }
+    }
+
+    public void updateTitle() {
+        Stage stage = (Stage) itemTable.getScene().getWindow();
+        stage.setTitle("Price Comparer: " + Observer.users[Observer.priviliges]);
     }
 }
 

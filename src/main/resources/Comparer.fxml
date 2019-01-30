@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<SplitPane dividerPositions="0.7506265664160401" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.MainController">
+<SplitPane fx:id="mainSplitPane" dividerPositions="0.7506265664160401" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.MainController">
     <items>
     <AnchorPane>
          <children>
@@ -16,11 +16,16 @@
                       <Menu mnemonicParsing="false" text="File">
                         <items>
                             <MenuItem mnemonicParsing="false" onAction="#handleSave" text="Save" />
-                            <MenuItem mnemonicParsing="false" onAction="#handleLogin" text="Login" />
                               <SeparatorMenuItem mnemonicParsing="false" />
                             <MenuItem mnemonicParsing="false" onAction="#closeApp" text="Exit" />
                         </items>
                       </Menu>
+                        <Menu mnemonicParsing="false" text="Login">
+                            <items>
+                                <MenuItem fx:id="customerMenuItem" mnemonicParsing="false" onAction="#handleLoginAsCustomer" text="I'm a customer!" />
+                                <MenuItem fx:id="loginMenuItem" mnemonicParsing="false" onAction="#handleLogin" text="Log in" />
+                            </items>
+                        </Menu>
                     </menus>
                   </MenuBar>
                </children>
@@ -37,7 +42,7 @@
               </columns>
             </TableView>
          </children></AnchorPane>
-    <AnchorPane minHeight="0.0" minWidth="1000.0" prefHeight="100.0" prefWidth="1000.0">
+    <AnchorPane minHeight="0.0" minWidth="1000.0" prefHeight="100.0" prefWidth="1000.0" style="-fx-background-color: FFFFFF;">
          <children>
             <HBox />
             <TextField fx:id="IDProduktField" layoutX="14.0" layoutY="14.0" prefHeight="25.0" prefWidth="91.0" promptText="id produktu..." />
@@ -49,15 +54,15 @@
             <Button fx:id="addBtn" layoutX="264.0" layoutY="144.0" mnemonicParsing="false" onAction="#handleAddButtonClick" prefHeight="25.0" prefWidth="91.0" text="Dodaj" />
             <TextField fx:id="filterInput" layoutX="410.0" layoutY="97.0" prefHeight="25.0" prefWidth="273.0" promptText="Szukana Nazwa..." />
             <Button fx:id="srchBtn" layoutX="592.0" layoutY="144.0" mnemonicParsing="false" onAction="#handleSearchButtonClick" prefHeight="25.0" prefWidth="91.0" text="Szukaj" />
-             <Label layoutX="452.0" layoutY="20.0" prefHeight="39.0" prefWidth="208.0" text="Wyszukiwarka Cen" textAlignment="CENTER" textFill="#e11c1c" textOverrun="WORD_ELLIPSIS">
+             <Label layoutX="385.0" layoutY="27.0" prefHeight="45.0" prefWidth="380.0" text="Cenoporównywacz zabijaka" textAlignment="CENTER" textOverrun="WORD_ELLIPSIS">
                <font>
-                  <Font name="Ink Free" size="24.0" />
+                  <Font name="Rockwell Condensed" size="36.0" />
                </font>
             </Label>
             <Button fx:id="addMarketBtn" layoutX="895.0" layoutY="86.0" mnemonicParsing="false" onAction="#handleDeleteButtonClick" prefHeight="25.0" prefWidth="91.0" text="Dodaj sklep" />
             <Button fx:id="delMarketBtn" layoutX="895.0" layoutY="122.0" mnemonicParsing="false" onAction="#handleDeleteButtonClick" prefHeight="25.0" prefWidth="91.0" text="Usun slep" />
             <Button fx:id="delRecBtn" layoutX="895.0" layoutY="157.0" mnemonicParsing="false" onAction="#handleDeleteButtonClick" prefHeight="25.0" prefWidth="91.0" text="Usun rekord" />
-            <Button fx:id="chartBtn" layoutX="895.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleChartButtonClick" prefHeight="46.0" prefWidth="91.0" style="-fx-background-color: A122F1;" text="Koszyk" textAlignment="CENTER" textFill="WHITE">
+            <Button fx:id="chartBtn" layoutX="895.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleChartButtonClick" prefHeight="46.0" prefWidth="91.0" style="-fx-background-color: A122F1;" text="Kosz" textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font></Button>

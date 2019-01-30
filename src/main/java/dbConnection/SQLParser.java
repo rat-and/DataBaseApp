@@ -17,8 +17,13 @@ public class SQLParser {
         return query;
     }
 
-    public String insertItemPriceQuery() {
-        query = "INSERT INTO cenyproduktow (IDProdukt, IDMarket, Nazwa, Ilosc, Waga, Jednostka, Cena, Promocja) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+    public String insertItemPriceQuery_items() {
+        query = "INSERT INTO items (item_id, name, opinion, description) VALUES(?, ?, ?, ?)";
+        return query;
+    }
+
+    public String insertItemPriceQuery_store_item() {
+        query = "INSERT INTO store_item(store_id, item_id, item_price) VALUES(?, ?, ?)";
         return query;
     }
 

@@ -11,8 +11,8 @@ import java.util.List;
 public class DataBaseConnector {
 
     private final static String DBURL = "jdbc:mysql://127.0.0.1:3306/ceneo_2.0?autoReconnect=true&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";      //schema's name
-    private static String DBUSER = Observer.users[2];    //default username
-    private static String DBPASS = Observer.passes[2];   //default user password
+    private static String DBUSER = Observer.users[3];    //default username
+    private static String DBPASS = Observer.passes[3];   //default user password
     private final static String DBDRIVER = "com.mysql.cj.jdbc.Driver";
 
     private Connection connection;
@@ -108,32 +108,50 @@ public class DataBaseConnector {
     }
 
     public void insertItemPrice(ItemPrice singleItemPrice) {
-//        query = sqlParser.insertItemPriceQuery();
-//
-//        try {
-//            Class.forName(DBDRIVER);
-//            connection = DriverManager.getConnection(DBURL, DBUSER, DBPASS);
-//            statement = connection.createStatement();
-//
-//            PreparedStatement preparedStatement = connection.prepareStatement(query);
-//            preparedStatement.setInt(1, singleItemPrice.getIDProdukt());
-//            preparedStatement.setInt(2, singleItemPrice.getIDMarket());
-//            preparedStatement.setString(3, singleItemPrice.getName());
-//            preparedStatement.setInt(4, singleItemPrice.getIlosc());
-//            preparedStatement.setDouble(5, singleItemPrice.getOpinion());
-//            preparedStatement.setString(6, singleItemPrice.getDescription());
-//            preparedStatement.setDouble(7, singleItemPrice.getCena());
-//            preparedStatement.setInt(8, 0);
-//
-//            preparedStatement.execute();
-//
-//            statement.close();
-//            connection.close();
-//        } catch (ClassNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
+        query = sqlParser.insertItemPriceQuery_items();
+
+        try {
+            Class.forName(DBDRIVER);
+            connection = DriverManager.getConnection(DBURL, DBUSER, DBPASS);
+            statement = connection.createStatement();
+
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, singleItemPrice.getIDProdukt());
+            preparedStatement.setString(2, singleItemPrice.getName());
+            preparedStatement.setDouble(3, singleItemPrice.getOpinion());
+            preparedStatement.setString(4, singleItemPrice.getDescription());
+
+            preparedStatement.execute();
+
+            statement.close();
+            connection.close();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        query = sqlParser.insertItemPriceQuery_store_item();
+
+        try {
+            Class.forName(DBDRIVER);
+            connection = DriverManager.getConnection(DBURL, DBUSER, DBPASS);
+            statement = connection.createStatement();
+
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, singleItemPrice.getIDMarket());
+            preparedStatement.setInt(2, singleItemPrice.getIDProdukt());
+            preparedStatement.setDouble(3, singleItemPrice.getPrice());
+
+            preparedStatement.execute();
+
+            statement.close();
+            connection.close();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
     }
 
